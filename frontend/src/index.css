@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --accent: #f97316;
+    --accent2: #f59e0b;
+    --accent3: #ea580c;
+    --bg: #080C10;
+    --surface: #0D1117;
+    --card: #111820;
+    --border: #1C2530;
+    --success: #00C97A;
+    --warning: #F5A623;
+    --danger: #FF4560;
+    --muted: #5A6878;
+    --text: #E8EDF2;
+  }
+
+  body {
+    @apply bg-bg text-text font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
