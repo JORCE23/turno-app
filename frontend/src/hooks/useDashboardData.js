@@ -37,6 +37,9 @@ export const useDashboardData = () => {
             ticket_promedio: 17200,
             total_tickets: 2005
           },
+          top_productos: {
+            "Producto de Prueba (Offline)": 150
+          },
           recomendaciones: [
             {
               tipo: "info",

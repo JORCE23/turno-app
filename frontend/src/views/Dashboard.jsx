@@ -14,8 +14,8 @@ export const Dashboard = () => {
   };
 
   // Obtener el producto más vendido
-  const topProductoNombre = Object.keys(data.top_productos)[0] || "N/A";
-  const topProductoCantidad = Object.values(data.top_productos)[0] || 0;
+  const topProductoNombre = data.top_productos ? Object.keys(data.top_productos)[0] : "N/A";
+  const topProductoCantidad = data.top_productos ? Object.values(data.top_productos)[0] : 0;
 
   return (
     <div className="p-8">
