@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, TrendingUp, Package, Users, Tag, Radar, Bell, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Package, Users, Tag, Radar, Bell, LogOut, X, Flame } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const Sidebar = ({ onClose }) => {
@@ -19,8 +19,11 @@ export const Sidebar = ({ onClose }) => {
     <aside className="w-64 bg-surface border-r border-border h-full flex flex-col shadow-2xl md:shadow-none">
       <div className="p-6 flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-accent">Turno</h1>
-          <p className="text-sm text-muted">Socio estratégico</p>
+          <div className="flex items-center gap-2">
+            <Flame size={24} className="text-accent fill-accent/20" />
+            <h1 className="text-2xl font-heading font-bold text-text">Turno<span className="text-accent">.</span></h1>
+          </div>
+          <p className="text-[10px] text-muted font-mono tracking-widest uppercase mt-1 ml-8">Business Intelligence</p>
         </div>
         {onClose && (
           <button onClick={onClose} className="md:hidden p-1 text-muted hover:text-text rounded-md hover:bg-border transition-colors">

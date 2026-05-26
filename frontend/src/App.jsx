@@ -11,7 +11,7 @@ import { Stock } from './views/Stock';
 import { Pricing } from './views/Pricing';
 import { Radar } from './views/Radar';
 import { Alertas } from './views/Alertas';
-import { Menu } from 'lucide-react';
+import { Menu, Flame } from 'lucide-react';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -38,7 +38,10 @@ const ProtectedRoute = ({ children }) => {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header móvil (solo visible en pantallas pequeñas) */}
         <header className="md:hidden flex items-center justify-between p-4 bg-surface border-b border-border">
-          <h1 className="text-xl font-heading font-bold text-accent">Turno</h1>
+          <div className="flex items-center gap-2">
+            <Flame size={20} className="text-accent fill-accent/20" />
+            <h1 className="text-xl font-heading font-bold text-text">Turno<span className="text-accent">.</span></h1>
+          </div>
           <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-text hover:bg-border rounded-lg transition-colors">
             <Menu size={24} />
           </button>
