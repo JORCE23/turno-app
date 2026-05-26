@@ -94,6 +94,10 @@ export const Predicciones = () => {
     alert("📦 Acción Estratégica:\n\nTe sugerimos aumentar tu pedido estándar de barriles de Cerveza y destilados en un 40% para cubrir el peak de este Sábado. ¿Deseas generar la orden pre-completada al proveedor?");
   };
 
+  const handleRecalcular = () => {
+    alert("🔄 Recalculando modelos predictivos...\n\n(En la Fase 2, esta acción consultará la IA de Turno en la nube para procesar nuevos datos climáticos y generar un pronóstico actualizado).");
+  };
+
   return (
     <div className="p-8">
       <header className="mb-8">
@@ -125,8 +129,15 @@ export const Predicciones = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-surface border border-border rounded-xl p-6">
-          <h2 className="text-xl font-heading font-bold mb-4">Proyección Semanal</h2>
-          <p className="text-sm text-muted mb-4">Demanda estimada para los próximos 7 días en relación a la capacidad máxima.</p>
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h2 className="text-xl font-heading font-bold">Proyección Semanal</h2>
+              <p className="text-sm text-muted">Demanda estimada para los próximos 7 días.</p>
+            </div>
+            <button onClick={handleRecalcular} className="bg-surface border border-accent/50 text-text text-xs px-3 py-1.5 rounded-md hover:bg-accent/10 transition-colors flex items-center gap-2 whitespace-nowrap">
+              <span>🔄</span> Recalcular
+            </button>
+          </div>
           <div className="h-[300px]">
             <Line options={chartOptions} data={demandaData} />
           </div>
