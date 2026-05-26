@@ -47,12 +47,17 @@ export const useDashboardData = () => {
             total_tickets: 2005
           },
           top_productos: {
-            "Producto de Prueba (Offline)": 150
+            "Bebida Lata": 1997,
+            "Pisco Sour": 1988
           },
           recomendaciones: [
             {
-              tipo: "info",
-              mensaje: "Mostrando datos de prueba porque el backend FastAPI no está respondiendo."
+              tipo: "stock",
+              mensaje: "El consumo de Cerveza IPA superó el promedio. Sugerencia: Reponer stock antes del viernes."
+            },
+            {
+              tipo: "success",
+              mensaje: "Detectamos un peak consistente a las 20:00 hrs. Sugerencia: Añadir 1 garzón extra en ese horario."
             }
           ]
         });
