@@ -86,6 +86,14 @@ export const Predicciones = () => {
     }
   };
 
+  const handleVerTacticas = () => {
+    alert("☔ Sugerencias de Delivery por Clima:\n\n1. Activar promo 'Menú Lluvia' en UberEats con costo de envío gratis.\n2. Reforzar dotación de repartidores propios.\n3. Reducir área de cobertura un 15% para mantener tiempos de entrega óptimos.");
+  };
+
+  const handleRevisarStock = () => {
+    alert("📦 Acción Estratégica:\n\nTe sugerimos aumentar tu pedido estándar de barriles de Cerveza y destilados en un 40% para cubrir el peak de este Sábado. ¿Deseas generar la orden pre-completada al proveedor?");
+  };
+
   return (
     <div className="p-8">
       <header className="mb-8">
@@ -141,7 +149,10 @@ export const Predicciones = () => {
               <h4 className="font-medium text-text">El clima afectará el fin de semana</h4>
               <p className="text-sm text-muted">Pronóstico de lluvia para el Jueves y Viernes. Prepara opciones de delivery fuertes.</p>
             </div>
-            <button className="mt-4 md:mt-0 px-4 py-2 bg-surface border border-border rounded-lg text-text hover:bg-border transition-colors text-sm font-medium">
+            <button 
+              onClick={handleVerTacticas}
+              className="mt-4 md:mt-0 px-4 py-2 bg-surface border border-border rounded-lg text-text hover:bg-border transition-colors text-sm font-medium"
+            >
               Ver Tácticas de Delivery
             </button>
           </div>
@@ -150,7 +161,10 @@ export const Predicciones = () => {
               <h4 className="font-medium text-text">Partido de la Selección (Sábado)</h4>
               <p className="text-sm text-muted">Aumento proyectado del 40% en consumo de cervezas. Asegura stock.</p>
             </div>
-            <button className="mt-4 md:mt-0 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent2 transition-colors text-sm font-medium">
+            <button 
+              onClick={handleRevisarStock}
+              className="mt-4 md:mt-0 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent2 transition-colors text-sm font-medium"
+            >
               Revisar Stock
             </button>
           </div>

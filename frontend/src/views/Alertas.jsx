@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { Bell, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 
 export const Alertas = () => {
-  const alertas = [
+  const [alertas, setAlertas] = useState([
     {
       id: 1,
       tipo: 'danger',
@@ -38,7 +39,19 @@ export const Alertas = () => {
       estado: 'Leído',
       icon: <Clock size={20} className="text-muted" />
     }
-  ];
+  ]);
+
+  const handleMarcarTodasLeidas = () => {
+    setAlertas(alertas.map(a => ({ ...a, estado: 'Leído' })));
+  };
+
+  const handleMarcarResuelto = (id) => {
+    setAlertas(alertas.map(a => a.id === id ? { ...a, estado: 'Leído' } : a));
+  };
+
+  const handleActuarAhora = (titulo) => {
+    alert(`🚀 Acción automática iniciada para: ${titulo}\n\n(En Fase 2, este botón se conectará directamente con la API de tu proveedor para hacer el pedido automático).`);
+  };
 
   return (
     <div className="p-8">
@@ -50,7 +63,10 @@ export const Alertas = () => {
       <div className="bg-surface border border-border rounded-xl p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-heading font-bold">Últimas Alertas</h2>
-          <button className="text-sm font-medium text-accent hover:text-accent2 transition-colors">
+          <button 
+            onClick={handleMarcarTodasLeidas}
+            className="text-sm font-medium text-accent hover:text-accent2 transition-colors"
+          >
             Marcar todas como leídas
           </button>
         </div>
@@ -91,11 +107,17 @@ export const Alertas = () => {
                 
                 {alerta.estado === 'Pendiente' && (
                   <div className="flex gap-3">
-                    <button className="text-xs px-3 py-1.5 bg-surface border border-border rounded text-text hover:bg-border transition-colors">
+                    <button 
+                      onClick={() => handleMarcarResuelto(alerta.id)}
+                      className="text-xs px-3 py-1.5 bg-surface border border-border rounded text-text hover:bg-border transition-colors"
+                    >
                       Marcar como resuelto
                     </button>
                     {alerta.tipo === 'danger' && (
-                      <button className="text-xs px-3 py-1.5 bg-accent text-white rounded hover:bg-accent2 transition-colors">
+                      <button 
+                        onClick={() => handleActuarAhora(alerta.titulo)}
+                        className="text-xs px-3 py-1.5 bg-accent text-white rounded hover:bg-accent2 transition-colors"
+                      >
                         Actuar ahora
                       </button>
                     )}
