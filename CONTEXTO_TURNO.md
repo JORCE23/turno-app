@@ -136,8 +136,8 @@ turno-app/
 
 ### Beta vendible (construir primero)
 - [x] Dashboard con KPIs + gráficos
-- [ ] Alerta diaria WhatsApp
-- [ ] Alertas de stock crítico
+- [x] Alerta diaria WhatsApp (Botón de copiado automático en Dashboard)
+- [x] Alertas de stock crítico
 
 ### Fase 2 (post primer pago)
 - [ ] Radar competencia (scraping Instagram)
@@ -212,7 +212,7 @@ http://localhost:8000/docs
 
 **Última sesión:** 25 de mayo de 2026
 **Completado hoy:**
-- [x] Dashboard MVP HTML (prototipo visual)
+- [x] Dashboard MVP HTML (prototipo visual replicado 100% en React)
 - [x] Pipeline Python: generar_csv.py + procesar.py → dashboard_data.json
 - [x] Web app React: Login, Auth, Sidebar, Dashboard completo, KpiCard
 - [x] Backend FastAPI básico sirviendo el JSON
@@ -225,9 +225,18 @@ http://localhost:8000/docs
 - [x] Vista Staffing.jsx (brechas de personal)
 - [x] Vista Pricing.jsx (ajustes y sensibilidad)
 - [x] Vista Alertas.jsx (notificaciones)
+- [x] Unificación del repositorio Git (Monorepo)
+- [x] Configuración de variables de entorno para API (VITE_API_URL)
+- [x] Deploy en Vercel (Frontend)
+- [x] Deploy en Render (Backend - Plan Free)
+- [x] Conexión Vercel -> Render verificada y enlazada
+- [x] Configurar `VITE_API_URL` en Vercel con la URL de Render.
+- [x] Probar el flujo "Mago de Oz" en producción (Generar datos locales -> Push a Github -> Ver actualización en Vercel).
+- [x] Fix: Timeout de 10s en frontend para manejar "Cold Starts" de Render.
 
 **Próxima sesión — construir:**
-- [ ] Deploy en Vercel + Render
+- [x] Definir formato del mensaje de Alerta diaria por WhatsApp (para envío manual).
+- [ ] Conectar Dominio turno.cl (opcional)
 
 **Decisiones tomadas:**
 - Stack: React + Tailwind + FastAPI + Vercel + Render

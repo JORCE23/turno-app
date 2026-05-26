@@ -86,19 +86,19 @@ export const Dashboard = () => {
     <div className="p-8">
       <header className="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text mb-2">Dashboard General</h1>
-          <p className="text-muted">Resumen operativo y recomendaciones estratégicas.</p>
+          <h1 className="text-3xl font-heading font-bold text-text mb-1">Dashboard</h1>
+          <p className="text-sm text-muted">Concepción, Chile · Barrio Brasil</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 bg-surface px-4 py-2 rounded-lg border border-border">
-            <Clock size={16} className="text-muted" />
-            <span className="text-sm text-text">
-              Última actualización: <strong className="text-accent">{data.ultima_actualizacion}</strong>
+          <div className="flex items-center gap-3 bg-card px-4 py-2 rounded-lg border border-border">
+            <div className="w-2 h-2 bg-success rounded-full animate-pulse shadow-[0_0_0_3px_rgba(0,201,122,0.2)]"></div>
+            <span className="text-xs font-mono text-muted">
+              {data.ultima_actualizacion}
             </span>
           </div>
           <button 
             onClick={handleCopiarWhatsApp}
-            className="flex items-center gap-2 bg-success/10 border border-success/20 text-success px-4 py-2 rounded-lg hover:bg-success/20 transition-colors text-sm font-medium"
+            className="flex items-center gap-2 bg-success/10 border border-success/20 text-success px-4 py-2 rounded-lg hover:bg-success/20 transition-colors text-xs font-medium"
           >
             <span>📲</span> WhatsApp Hoy
           </button>
@@ -106,44 +106,89 @@ export const Dashboard = () => {
       </header>
 
       {showAlert && (
-        <div className="bg-accent/10 border border-accent/25 rounded-xl p-4 flex items-center gap-4 mb-8 animate-fade-in">
+        <div className="bg-accent/10 border border-accent/30 rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4 mb-8 animate-fade-in">
           <div className="text-xl">⚡</div>
           <div className="flex-1">
             <div className="text-sm font-semibold text-accent">Radar: Competencia activa en tu zona</div>
-            <div className="text-xs text-muted mt-0.5">El Boliche (Plaza Perú) lanzó happy hour 2x1 en cócteles · Hace 47 min</div>
+            <div className="text-xs text-muted mt-1">El Boliche (Plaza Perú) lanzó happy hour 2x1 en cócteles · Hace 47 min</div>
           </div>
           <button 
             onClick={() => alert('Sugerencia: Activar promo 3x2 en cervezas por las próximas 2 horas para retener público.')}
-            className="text-[10px] uppercase tracking-wider text-accent bg-accent/10 border border-accent/30 rounded-md px-3 py-1.5 hover:bg-accent/20 transition-colors whitespace-nowrap"
+            className="text-[10px] font-mono uppercase tracking-wider text-accent bg-accent/10 border border-accent/30 rounded-md px-4 py-2 hover:bg-accent/20 transition-colors whitespace-nowrap mt-2 md:mt-0"
           >
             Ver contraataque →
           </button>
-          <button onClick={() => setShowAlert(false)} className="text-accent opacity-60 hover:opacity-100 hover:scale-110 transition-all">
+          <button onClick={() => setShowAlert(false)} className="text-accent opacity-60 hover:opacity-100 transition-opacity hidden md:block">
             ✕
           </button>
         </div>
       )}
+
+      {/* WEATHER STRIP */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-fade-in">
+        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors cursor-pointer" onClick={() => alert("Simulando análisis climático...")}>
+          <div className="text-3xl">🌧️</div>
+          <div className="flex-1">
+            <div className="text-xl font-bold font-heading">9°C</div>
+            <div className="text-[11px] text-muted mt-0.5">Lluvia moderada · 18:00–23:00</div>
+          </div>
+          <div className="text-right">
+            <div className="text-[9px] font-mono text-muted uppercase tracking-widest">Impacto ventas</div>
+            <div className="text-sm font-bold text-danger">−18%</div>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors cursor-pointer" onClick={() => alert("Simulando análisis de eventos...")}>
+          <div className="text-3xl">🎸</div>
+          <div className="flex-1">
+            <div className="text-xl font-bold font-heading">Evento</div>
+            <div className="text-[11px] text-muted mt-0.5">Feria música · Plaza Perú · 21:00</div>
+          </div>
+          <div className="text-right">
+            <div className="text-[9px] font-mono text-muted uppercase tracking-widest">Impacto ventas</div>
+            <div className="text-sm font-bold text-success">+34%</div>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors cursor-pointer">
+          <div className="text-3xl">💸</div>
+          <div className="flex-1">
+            <div className="text-xl font-bold font-heading">Pricing</div>
+            <div className="text-[11px] text-muted mt-0.5">Recomendación activa · 20:00–23:00</div>
+          </div>
+          <div className="text-right">
+            <div className="text-[9px] font-mono text-muted uppercase tracking-widest">+Margen est.</div>
+            <div className="text-sm font-bold text-accent">+$87K</div>
+          </div>
+        </div>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {/* KPI GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <KpiCard 
-          title="Ventas Totales (30d)" 
+          title="Ventas Hoy" 
           value={formatCurrency(data.kpis.ventas_totales_30d)} 
           trend={12.5}
-          subtitle="Vs. mes anterior"
+          subtitle="Vs. ayer"
           icon={<DollarSign size={24} />}
         />
         <KpiCard 
           title="Ticket Promedio" 
           value={formatCurrency(data.kpis.ticket_promedio)} 
-          trend={-2.1}
-          subtitle={`Basado en ${data.kpis.total_tickets} transacciones`}
+          trend={5.2}
+          subtitle="Vs. semana pasada"
           icon={<TrendingUp size={24} />}
         />
         <KpiCard 
-          title="Producto Estrella" 
-          value={topProductoNombre} 
-          subtitle={`${topProductoCantidad} unidades vendidas`}
+          title="Ocupación 20:00" 
+          value="87%" 
+          subtitle="Pico esperado"
           icon={<Users size={24} />}
+        />
+        <KpiCard 
+          title="Merma evitada" 
+          value="$43.000" 
+          trend={2.4}
+          subtitle="Esta semana"
+          icon={<DollarSign size={24} />}
         />
       </div>
       
@@ -172,26 +217,156 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-surface border border-border rounded-xl p-6">
-        <h2 className="text-xl font-heading font-bold mb-4">Recomendaciones Automáticas</h2>
-        <div className="space-y-4">
-          {data.recomendaciones.map((rec, index) => (
-            <div key={index} className={`p-4 border rounded-lg ${
-              rec.tipo === 'stock' ? 'bg-warning/10 border-warning/20' : 
-              rec.tipo === 'info' ? 'bg-accent/10 border-accent/20' :
-              'bg-success/10 border-success/20'
-            }`}>
-              <h4 className={`font-medium mb-1 ${
-                rec.tipo === 'stock' ? 'text-warning' : 
-                rec.tipo === 'info' ? 'text-accent' :
-                'text-success'
-              }`}>
-                {rec.tipo === 'stock' ? 'Alerta de Stock' : 
-                 rec.tipo === 'info' ? 'Aviso del Sistema' : 'Sugerencia Operativa'}
-              </h4>
-              <p className="text-text/80 text-sm">{rec.mensaje}</p>
+      {/* BOTTOM GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* STAFFING */}
+        <div className="bg-surface border border-border rounded-xl p-6 flex flex-col">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h2 className="text-[15px] font-heading font-bold text-text">Staffing Hoy</h2>
+              <p className="text-[11px] text-muted mt-1">Predicción de carga</p>
             </div>
-          ))}
+            <span className="text-[9px] uppercase tracking-wider text-warning bg-warning/10 border border-warning/20 px-2 py-1 rounded">Ajuste sugerido</span>
+          </div>
+          <table className="w-full text-left border-collapse mt-2">
+            <thead>
+              <tr className="border-b border-border/50 text-[9px] font-mono uppercase tracking-wider text-muted">
+                <th className="pb-3 font-normal">Rol</th>
+                <th className="pb-3 font-normal">Turno</th>
+                <th className="pb-3 font-normal w-1/3">Carga</th>
+              </tr>
+            </thead>
+            <tbody className="text-xs">
+              <tr className="border-b border-border/30">
+                <td className="py-3 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-danger"></span>Garzones</td>
+                <td className="py-3 text-muted font-mono text-[10px]">18–00</td>
+                <td className="py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden"><div className="h-full bg-danger w-[92%]"></div></div>
+                    <span className="text-[10px] font-mono text-danger">92%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr className="border-b border-border/30">
+                <td className="py-3 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-warning"></span>Bartenders</td>
+                <td className="py-3 text-muted font-mono text-[10px]">19–01</td>
+                <td className="py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden"><div className="h-full bg-warning w-[75%]"></div></div>
+                    <span className="text-[10px] font-mono text-warning">75%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr className="border-b border-border/30">
+                <td className="py-3 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-success"></span>Cocina</td>
+                <td className="py-3 text-muted font-mono text-[10px]">17–23</td>
+                <td className="py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden"><div className="h-full bg-success w-[60%]"></div></div>
+                    <span className="text-[10px] font-mono text-success">60%</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-muted"></span>Caja</td>
+                <td className="py-3 text-muted font-mono text-[10px]">18–00</td>
+                <td className="py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden"><div className="h-full bg-accent3 w-[45%]"></div></div>
+                    <span className="text-[10px] font-mono text-accent3">45%</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="mt-auto pt-4">
+            <div className="flex justify-between items-center bg-danger/10 border border-danger/20 rounded-lg p-3">
+              <span className="text-[11px] text-danger flex-1 pr-4 leading-tight">⚠ Turno recomienda llamar 1 garzón extra para 20:00–22:00</span>
+              <button className="text-[10px] font-medium text-text bg-surface border border-danger/50 px-3 py-1.5 rounded hover:bg-danger/20 transition-colors whitespace-nowrap" onClick={(e) => { e.target.innerText = '✓ Listo'; e.target.classList.add('text-success', 'border-success/50', 'bg-success/10'); e.target.classList.remove('text-text', 'border-danger/50', 'bg-surface'); }}>Notificar</button>
+            </div>
+          </div>
+        </div>
+
+        {/* STOCK & MERMA */}
+        <div className="bg-surface border border-border rounded-xl p-6 flex flex-col">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h2 className="text-[15px] font-heading font-bold text-text">Stock & Merma</h2>
+              <p className="text-[11px] text-muted mt-1">Oportunidades detectadas</p>
+            </div>
+            <span className="text-[9px] uppercase tracking-wider text-success bg-success/10 border border-success/20 px-2 py-1 rounded">3 acciones</span>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-3">
+              <div className="text-xl">🍋</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-text truncate">Limones (2.3 kg)</div>
+                <div className="text-[10px] text-muted mt-0.5 truncate">Vence en 2 días · Promo Pisco Sour</div>
+              </div>
+              <button className="text-[10px] font-medium text-text bg-surface border border-accent/50 px-2.5 py-1.5 rounded hover:bg-accent/20 transition-colors" onClick={(e) => { e.target.innerText = '✓ Listo'; e.target.classList.add('text-success', 'border-success/50', 'bg-success/10'); e.target.classList.remove('text-text', 'border-accent/50', 'bg-surface'); }}>Aplicar</button>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-3">
+              <div className="text-xl">🥑</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-text truncate">Palta (4 kg)</div>
+                <div className="text-[10px] text-muted mt-0.5 truncate">Vence en 4 días · Sugerir: tostadas</div>
+              </div>
+              <button className="text-[10px] font-medium text-text bg-surface border border-accent/50 px-2.5 py-1.5 rounded hover:bg-accent/20 transition-colors" onClick={(e) => { e.target.innerText = '✓ Listo'; e.target.classList.add('text-success', 'border-success/50', 'bg-success/10'); e.target.classList.remove('text-text', 'border-accent/50', 'bg-surface'); }}>Sugerir</button>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-3">
+              <div className="text-xl">🍺</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-text truncate">Cerveza artesanal</div>
+                <div className="text-[10px] text-muted mt-0.5 truncate">Pedir: 3 cajas</div>
+              </div>
+              <button className="text-[10px] font-medium text-text bg-surface border border-accent/50 px-2.5 py-1.5 rounded hover:bg-accent/20 transition-colors" onClick={(e) => { e.target.innerText = '✓ Listo'; e.target.classList.add('text-success', 'border-success/50', 'bg-success/10'); e.target.classList.remove('text-text', 'border-accent/50', 'bg-surface'); }}>Pedir</button>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-3">
+              <div className="text-xl">🥩</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-text truncate">Lomo (1.8 kg)</div>
+                <div className="text-[10px] text-muted mt-0.5 truncate">Stock óptimo · Margen alto</div>
+              </div>
+              <span className="text-[10px] text-success font-mono font-bold bg-success/10 px-2 py-1 rounded">OK</span>
+            </div>
+          </div>
+        </div>
+
+        {/* RADAR COMPETENCIA */}
+        <div className="bg-surface border border-border rounded-xl p-6 flex flex-col">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h2 className="text-[15px] font-heading font-bold text-text">Radar Competencia</h2>
+              <p className="text-[11px] text-muted mt-1">Zona Barrio Brasil · Hoy</p>
+            </div>
+            <span className="text-[9px] uppercase tracking-wider text-warning bg-warning/10 border border-warning/20 px-2 py-1 rounded">2 alertas</span>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="bg-card border border-border rounded-lg p-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs font-medium text-text">🍻 El Boliche</span>
+                <span className="text-[9px] font-mono text-muted">hace 47 min</span>
+              </div>
+              <p className="text-[11px] text-muted leading-tight mb-2">Happy hour 2x1 cócteles · Instagram post con 340 likes</p>
+              <button className="text-[10px] text-accent bg-accent/10 hover:bg-accent/20 transition-colors px-2 py-1 rounded w-full text-left truncate">→ Sugerencia: Promo flash "3x2 cervezas"</button>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs font-medium text-text">🌮 La Cantina</span>
+                <span className="text-[9px] font-mono text-muted">hace 2 hrs</span>
+              </div>
+              <p className="text-[11px] text-muted leading-tight mb-2">Lanzó menú especial fútbol · Transmisión Copa en pantalla</p>
+              <button className="text-[10px] text-accent bg-accent/10 hover:bg-accent/20 transition-colors px-2 py-1 rounded w-full text-left truncate" onClick={(e) => { e.target.innerText = '✓ Listo'; e.target.classList.add('text-success', 'bg-success/10'); e.target.classList.remove('text-accent', 'bg-accent/10'); }}>→ Sugerencia: Activar pantallas + promo picoteo</button>
+            </div>
+            <div className="bg-success/5 border border-success/10 rounded-lg p-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs font-medium text-muted">🔍 Monitoreo activo</span>
+                <span className="text-[9px] font-mono text-muted">3 locales</span>
+              </div>
+              <p className="text-[10px] text-muted/70 leading-tight">Sin actividad reciente detectada en competidores restantes</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
