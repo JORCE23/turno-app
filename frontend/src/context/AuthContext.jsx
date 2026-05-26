@@ -13,7 +13,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (username, password) => {
-    if ((username === 'admin' && password === 'admin123') || (username === 'cliente' && password === 'cliente123')) {
+    if (
+      (username === 'admin' && password === 'admin123') || 
+      (username === 'cliente' && password === 'cliente123') ||
+      (username === 'losalamos' && password === 'pizza2026')
+    ) {
       const userData = { username, role: username === 'admin' ? 'admin' : 'client' };
       setUser(userData);
       localStorage.setItem('turno_user', JSON.stringify(userData));
