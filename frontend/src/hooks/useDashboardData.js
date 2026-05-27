@@ -13,8 +13,8 @@ export const useDashboardData = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Intentar conectar con el backend. Usa VITE_API_URL en producción o localhost en desarrollo.
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        // Usamos 127.0.0.1 en lugar de localhost para evitar el delay de IPv6 en Windows
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
         
         // Limpiamos la URL por si tiene un slash (/) final accidental en Vercel
         const cleanUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;

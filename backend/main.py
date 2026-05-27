@@ -101,8 +101,8 @@ async def obtener_clima_concepcion():
     # API Open-Meteo sin Keys
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,precipitation,weather_code&timezone=America%2FSantiago"
     
-    # timeout=3.0 obliga a que no se quede pegado pensando si el wifi parpadea
-    async with httpx.AsyncClient(timeout=3.0) as client:
+    # timeout=1.0 para que el backend no espere casi nada si el internet local está inestable
+    async with httpx.AsyncClient(timeout=1.0) as client:
         try:
             respuesta = await client.get(url)
             if respuesta.status_code == 200:
