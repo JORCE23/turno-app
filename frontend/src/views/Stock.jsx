@@ -10,6 +10,14 @@ export const Stock = () => {
     { id: 5, name: 'Pan de Hamburguesa', current: 120, min: 100, unit: 'unidades', status: 'ok', trend: 'Consumo estable' },
   ];
 
+  const handleGenerarOrden = () => {
+    alert("📋 Orden de compra generada automáticamente con los ítems críticos (Cerveza IPA y Limones).\n\nEn la Fase 2, esta orden se enviará por WhatsApp o email directamente a tus proveedores.");
+  };
+
+  const handlePedirAhora = (name) => {
+    alert(`📦 Preparando solicitud rápida de stock para: ${name}.\n\n(Acción simulada para el MVP)`);
+  };
+
   return (
     <div className="p-8">
       <header className="mb-8">
@@ -47,7 +55,10 @@ export const Stock = () => {
       <div className="bg-surface border border-border rounded-xl p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-heading font-bold">Estado de Insumos Clave</h2>
-          <button className="bg-accent hover:bg-accent2 text-bg font-bold py-2 px-4 rounded-lg transition-colors">
+          <button 
+            onClick={handleGenerarOrden}
+            className="bg-accent hover:bg-accent2 text-bg font-bold py-2 px-4 rounded-lg transition-colors"
+          >
             Generar Orden de Compra
           </button>
         </div>
@@ -96,7 +107,10 @@ export const Stock = () => {
                   </td>
                   <td className="py-4 px-4 text-sm text-text/80">{item.trend}</td>
                   <td className="py-4 px-4 text-right">
-                    <button className="text-accent hover:text-accent2 text-sm font-medium transition-colors">
+                    <button 
+                      onClick={() => handlePedirAhora(item.name)}
+                      className="text-accent hover:text-accent2 text-sm font-medium transition-colors"
+                    >
                       Pedir ahora
                     </button>
                   </td>

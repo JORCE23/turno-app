@@ -51,6 +51,16 @@ export const Sidebar = ({ onClose }) => {
       </nav>
 
       <div className="p-4 border-t border-border mt-auto">
+        <div className="flex items-center gap-3 px-4 py-3 mb-2 bg-card rounded-lg border border-border">
+          <div className="w-8 h-8 rounded-md bg-gradient-to-br from-accent2 to-accent flex items-center justify-center text-bg font-bold font-heading text-sm shrink-0">
+            PA
+          </div>
+          <div className="overflow-hidden">
+            <div className="text-sm font-medium text-text truncate">Pizza Los Álamos</div>
+            <div className="text-[10px] text-accent font-mono tracking-wider">PLAN PILOTO</div>
+          </div>
+        </div>
+
         <button
           onClick={logout}
           className="flex items-center gap-3 px-4 py-3 w-full text-left text-danger hover:bg-danger/10 rounded-lg transition-colors"
