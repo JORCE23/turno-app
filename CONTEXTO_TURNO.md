@@ -15,7 +15,7 @@ Copia este bloque de código y reemplaza todo tu archivo `CONTEXTO_TURNO.md` en 
 
 **Nombre:** Turno SpA
 **Tipo:** SaaS B2B · Business Intelligence Predictivo para restaurantes
-**Etapa:** MVP — Fase 1 (Transición a automatización con APIs reales + ML)
+**Etapa:** MVP — Fase 1 FINALIZADA (Pendiente: Configurar Dominio Propio)
 **Ubicación:** Concepción, Chile
 **Fundador:** Jorge Ceballos Segura
 
@@ -248,12 +248,15 @@ cd frontend && vercel
 * [x] Motor de Analítica Prescriptiva cruzando clima (OpenWeather) con predicción de ventas ML.
 * [x] UI Dashboard actualizada para mostrar recomendaciones IA y status del clima en vivo.
 * [x] Migración de API Clima de OpenWeather a Open-Meteo (Sin API Key).
+* [x] Landing Page corporativa integrada (Multi-page app con Vite).
+* [x] Diseño Responsivo y botón de Login unificado con HashRouter.
+* [x] **Fase 1 MVP completada exitosamente.**
 
 **Próxima sesión — construir (SPRINT ACTUAL):**
 
+* [ ] **Dominio Propio:** Comprar y enlazar dominio oficial (ej. turno.cl o turno.com) en Vercel.
 * [ ] **Base de Datos Cloud:** Crear proyecto en Supabase, subir historial de ventas y conectar el backend FastAPI mediante credenciales.
 * [ ] **Refactor de Datos:** Modificar `main.py` para leer los KPIs directamente desde PostgreSQL en Supabase en lugar del JSON local.
-* [x] **API WhatsApp:** Configurar Twilio Sandbox en FastAPI para disparar las recomendaciones.
 
 **Decisiones tomadas:**
 
