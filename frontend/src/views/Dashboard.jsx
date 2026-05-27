@@ -40,13 +40,34 @@ export const Dashboard = () => {
   const topProductoNombre = data.top_productos ? Object.keys(data.top_productos)[0] : "N/A";
   const topProductoCantidad = data.top_productos ? Object.values(data.top_productos)[0] : 0;
 
-  const handleCopiarWhatsApp = () => {
+  const handleEnviarWhatsApp = async () => {
     const recomendacionesIA = data.recomendaciones_ia 
       ? data.recomendaciones_ia.map(r => `• ${r.mensaje}`).join('\n')
       : data.recomendaciones.map(r => `• ${r.mensaje}`).join('\n');
     const mensaje = `☀️ *¡Hola! Tu resumen estratégico de Turno* 🚀\n\n📊 *Cierre y Acumulado (30d):*\n💰 Ventas totales: ${formatCurrency(data.kpis.ventas_totales_30d)}\n💳 Ticket promedio: ${formatCurrency(data.kpis.ticket_promedio)}\n🏆 Tu estrella: ${topProductoNombre} (${topProductoCantidad} uds)\n\n🧠 *Recomendaciones para HOY:*\n${recomendacionesIA}\n\n🔗 *Más detalles aquí:*\nhttps://[TU-DOMINIO].vercel.app\n\n*Que sea un excelente turno.* 📈🔥`;
-    navigator.clipboard.writeText(mensaje);
-    showToast('¡Resumen copiado! Listo para pegarlo en WhatsApp.', '✅');
+    
+    showToast('Enviando WhatsApp por Twilio...', '⏳');
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+      const cleanUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
+      
+      const response = await fetch(`${cleanUrl}/api/send-whatsapp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mensaje })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        showToast('¡WhatsApp enviado con éxito!', '✅');
+      } else {
+        showToast(`Error al enviar: ${result.error}`, '❌');
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showToast('Error de conexión con el servidor', '❌');
+    }
   };
 
   // Datos simulados para las gráficas del MVP
@@ -106,7 +127,7 @@ export const Dashboard = () => {
             </span>
           </div>
           <button 
-            onClick={handleCopiarWhatsApp}
+            onClick={handleEnviarWhatsApp}
             className="flex items-center gap-2 bg-success/10 border border-success/20 text-success px-4 py-2 rounded-lg hover:bg-success/20 transition-colors text-xs font-medium"
           >
             <span>📲</span> WhatsApp Hoy

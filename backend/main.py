@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import json
 import os
 import httpx
@@ -7,6 +8,7 @@ import joblib
 import pandas as pd
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from twilio.rest import Client
 
 # Buscar el .env explícitamente en la carpeta raíz y forzar su lectura
 ruta_env = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
@@ -167,3 +169,30 @@ def obtener_prediccion_semana():
         "dias": nombres_dias,
         "predicciones": predicciones
     }
+
+
+# --- MODELO Y RUTA DE WHATSAPP (TWILIO) ---
+class WhatsAppRequest(BaseModel):
+    mensaje: str
+
+@app.post("/api/send-whatsapp")
+def enviar_whatsapp(req: WhatsAppRequest):
+    account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+    auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+    from_number = os.getenv('TWILIO_WHATSAPP_NUMBER') 
+    to_number = os.getenv('TO_WHATSAPP_NUMBER')       
+
+    if not all([account_sid, auth_token, from_number, to_number]):
+        return {"success": False, "error": "Faltan credenciales de Twilio en el archivo .env"}
+
+    try:
+        cliente_twilio = Client(account_sid, auth_token)
+        mensaje_enviado = cliente_twilio.messages.create(
+            from_=from_number,
+            body=req.mensaje,
+            to=to_number
+        )
+        return {"success": True, "message_sid": mensaje_enviado.sid}
+    except Exception as e:
+        print(f"❌ Error enviando WhatsApp: {e}")
+        return {"success": False, "error": str(e)}

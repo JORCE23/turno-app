@@ -156,8 +156,8 @@ turno-app/
 - [x] Dashboard con KPIs + gráficos
 - [x] Alertas de stock crítico
 - [x] **NUEVO:** API Clima integrada (Open-Meteo)
-- [ ] **NUEVO:** Alerta automática WhatsApp (Twilio API)
-- [ ] **NUEVO:** Motor ML Local + Analítica Prescriptiva (Brecha de Metas)
+- [x] **NUEVO:** Alerta automática WhatsApp (Twilio API)
+- [x] **NUEVO:** Motor ML Local + Analítica Prescriptiva (Brecha de Metas)
 
 ### Fase 2 (Post primer pago)
 - [ ] Base de datos en la nube (Supabase)
@@ -253,7 +253,7 @@ cd frontend && vercel
 
 * [ ] **Base de Datos Cloud:** Crear proyecto en Supabase, subir historial de ventas y conectar el backend FastAPI mediante credenciales.
 * [ ] **Refactor de Datos:** Modificar `main.py` para leer los KPIs directamente desde PostgreSQL en Supabase en lugar del JSON local.
-* [ ] **API WhatsApp:** Configurar Twilio Sandbox en FastAPI para disparar las recomendaciones.
+* [x] **API WhatsApp:** Configurar Twilio Sandbox en FastAPI para disparar las recomendaciones.
 
 **Decisiones tomadas:**
 
