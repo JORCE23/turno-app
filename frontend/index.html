@@ -1,26 +1,904 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Cargar FontAwesome para el Logo -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turno | IA Predictiva para Restobares y Comercio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>frontend</title>
     <style>
-      /* Variables dinámicas para el Modo Claro (Fondo Blanco) */
-      html.light {
-        --bg: #F8FAFC;
-        --surface: #F1F5F9;
-        --card: #FFFFFF;
-        --border: #E2E8F0;
-        --text: #0F172A;
-        --muted: #64748B;
-      }
+        :root {
+            --bg-dark: #0c0a09; 
+            --bg-card: #1c1917; 
+            --bg-app: #151312;
+            --accent: #f97316; 
+            --accent-glow: rgba(249, 115, 22, 0.5);
+            --accent-hover: #ea580c;
+            --gradient-text: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+            --text-main: #fafaf9;
+            --text-muted: #a8a29e;
+            --whatsapp: #25D366;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- Animaciones Base --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        @keyframes float { 
+            0% { transform: translateY(0px); } 
+            50% { transform: translateY(-15px); } 
+            100% { transform: translateY(0px); } 
+        }
+        @keyframes pulseGlow { 
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); } 
+            70% { box-shadow: 0 0 0 15px rgba(249, 115, 22, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); } 
+        }
+
+        /* --- Navegación (Glassmorphism) --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 5%; background: rgba(12, 10, 9, 0.7); backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px); position: fixed; width: 100%; top: 0; z-index: 1000;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .logo { font-size: 28px; font-weight: 800; display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; }
+        .logo-icon { color: var(--accent); }
+        .nav-links { display: flex; gap: 40px; font-weight: 500; font-size: 0.95rem; align-items: center; }
+        .nav-links a { position: relative; padding-bottom: 5px; color: var(--text-muted); transition: 0.3s; }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0; background: var(--accent); transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        
+        .btn-primary {
+            background: var(--gradient-text); color: #fff; padding: 14px 28px;
+            border-radius: 8px; font-weight: 700; transition: all 0.3s ease; border: none; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.25); text-align: center;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4); }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 5% 60px;
+            background-image: url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(100deg, rgba(12,10,9,0.95) 0%, rgba(12,10,9,0.85) 50%, rgba(12,10,9,0.4) 100%); z-index: 1;
+        }
+        .hero-content {
+            position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr;
+            gap: 60px; align-items: center; max-width: 1300px; margin: 0 auto; width: 100%;
+        }
+        .hero-text h1 { font-size: 4.5rem; font-weight: 800; line-height: 1.05; margin-bottom: 25px; letter-spacing: -1.5px; }
+        .hero-text h1 span { background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-text p { font-size: 1.25rem; color: #d6d3d1; margin-bottom: 40px; max-width: 500px; font-weight: 300; }
+        
+        /* Gráficos Visuales (Hero) */
+        .hero-visuals { position: relative; height: 550px; perspective: 1000px; }
+        .hero-visuals::before { content: ''; position: absolute; width: 300px; height: 300px; background: var(--accent); filter: blur(120px); opacity: 0.15; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; }
+        
+        .mock-dashboard {
+            background: rgba(28, 25, 23, 0.85); backdrop-filter: blur(20px); border: 1px solid var(--border-subtle);
+            border-radius: 20px; padding: 35px; width: 85%; position: absolute; right: 0; top: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); z-index: 2; animation: float 6s ease-in-out infinite;
+        }
+        .mock-dashboard h4 { margin-bottom: 25px; color: var(--text-main); font-weight: 600; font-size: 1.1rem; }
+        .chart-bars { display: flex; align-items: flex-end; gap: 15px; height: 160px; margin-bottom: 25px; }
+        .bar { flex: 1; background: rgba(255,255,255,0.05); border-radius: 6px 6px 0 0; position: relative; animation: grow 1.5s ease-out forwards; transform-origin: bottom; border-top: 1px solid rgba(255,255,255,0.1); }
+        .bar.active { background: var(--gradient-text); border-top: none; box-shadow: 0 0 20px rgba(249, 115, 22, 0.3); }
+        .bar::after { content: 'Hoy'; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .bar:nth-child(1) { height: 40%; } .bar:nth-child(1)::after { content: 'Lun'; }
+        .bar:nth-child(2) { height: 55%; } .bar:nth-child(2)::after { content: 'Mar'; }
+        .bar:nth-child(3) { height: 35%; } .bar:nth-child(3)::after { content: 'Mié'; }
+        .bar:nth-child(4) { height: 90%; } .bar:nth-child(4)::after { content: 'Jue'; }
+        .bar:nth-child(5) { height: 100%; } .bar:nth-child(5)::after { content: 'Vie'; color: var(--accent); font-weight: 700; }
+        
+        .mock-whatsapp {
+            background: rgba(255, 255, 255, 0.98); color: #1c1917; padding: 20px 25px;
+            border-radius: 0 20px 20px 20px; position: absolute; left: -30px; bottom: 80px;
+            width: 340px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; gap: 18px;
+            border-left: 6px solid var(--whatsapp); z-index: 3; animation: float 7s ease-in-out infinite 1s;
+        }
+        .mock-whatsapp i { font-size: 32px; color: var(--whatsapp); margin-top: 2px; }
+        .mock-whatsapp strong { font-size: 1.05rem; }
+        .mock-whatsapp p { font-size: 0.95rem; line-height: 1.4; margin-top: 5px; color: #44403c; }
+
+        @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+        /* Barra de Integraciones */
+        .integrations-bar { text-align: left; margin-top: 50px; }
+        .integrations-bar p { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 15px; }
+        .integrations-icons { display: flex; gap: 35px; align-items: center; }
+        .integrations-icons span { display: flex; align-items: center; gap: 8px; color: #d6d3d1; font-weight: 500; opacity: 0.7; transition: 0.3s; }
+        .integrations-icons span:hover { opacity: 1; color: var(--accent); }
+        .integrations-icons i { font-size: 1.4rem; }
+
+        /* --- Marquee --- */
+        .marquee-container { background: var(--bg-card); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); padding: 25px 0; overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+        .marquee-content { display: inline-flex; gap: 80px; animation: scroll-marquee 30s linear infinite; font-weight: 700; font-size: 1.25rem; color: var(--text-muted); }
+        .marquee-content span { display: flex; align-items: center; gap: 12px; transition: 0.3s; cursor: default; }
+        .marquee-content span i { color: var(--accent); opacity: 0.5; transition: 0.3s; }
+        .marquee-content span:hover { color: var(--text-main); }
+        .marquee-content span:hover i { opacity: 1; }
+        @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- NUEVO: Estilos Sección de Estadísticas --- */
+        .stats-section { padding: 80px 5%; background-color: var(--bg-card); border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: center; position: relative; }
+        .stats-section::before { content: ''; position: absolute; top: -50%; left: 50%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(249,115,22,0.05) 0%, transparent 60%); transform: translateX(-50%); pointer-events: none; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; max-width: 1200px; width: 100%; text-align: center; position: relative; z-index: 2; }
+        .stat-box { padding: 20px; }
+        .stat-number { font-size: 4rem; font-weight: 800; background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; line-height: 1; display: inline-block; letter-spacing: -2px; }
+        .stat-label { color: var(--text-main); font-size: 1.05rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .stat-desc { color: var(--text-muted); font-size: 0.9rem; font-weight: 300; }
+        /* --------------------------------------------- */
+
+        /* --- Features --- */
+        .features { padding: 120px 5%; background-color: var(--bg-dark); }
+        .section-tag { color: var(--accent); font-weight: 700; letter-spacing: 1.5px; font-size: 0.9rem; text-transform: uppercase; display: block; text-align: center; margin-bottom: 15px; }
+        .section-title { text-align: center; font-size: 3rem; margin-bottom: 70px; font-weight: 800; letter-spacing: -1px; }
+        
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; max-width: 1250px; margin: 0 auto; }
+        .card { background-color: var(--bg-card); padding: 10px; border-radius: 24px; border: 1px solid var(--border-subtle); transition: all 0.4s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
+        .card:hover { border-color: rgba(249, 115, 22, 0.4); transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); }
+        .card img { width: 100%; height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 20px; }
+        .card-content { padding: 0 25px 25px; }
+        .card h3 { font-size: 1.6rem; margin-bottom: 12px; font-weight: 700; }
+        .card p { color: var(--text-muted); font-weight: 300; }
+
+        /* --- App Demo --- */
+        .app-demo { padding: 120px 5%; background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%); position: relative; }
+        .app-demo-subtitle { text-align: center; color: var(--text-muted); max-width: 650px; margin: 10px auto 60px; font-size: 1.15rem; font-weight: 300; }
+        
+        .browser-window {
+            max-width: 1150px; margin: 0 auto; background: var(--bg-app); border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08); overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column; position: relative;
+        }
+        .browser-header { background: #0c0a09; padding: 18px 24px; display: flex; gap: 10px; border-bottom: 1px solid var(--border-subtle); }
+        .browser-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .browser-dot.r { background: #ff5f56; } .browser-dot.y { background: #ffbd2e; } .browser-dot.g { background: #27c93f; }
+        
+        .app-layout { display: flex; min-height: 650px; }
+        .app-sidebar { width: 260px; background: rgba(255,255,255,0.01); border-right: 1px solid var(--border-subtle); padding: 35px 25px; }
+        .app-sidebar ul { list-style: none; margin-top: 40px; }
+        .app-sidebar li { padding: 14px 18px; margin-bottom: 10px; border-radius: 10px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .app-sidebar li:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
+        .app-sidebar li.active { background: rgba(249, 115, 22, 0.1); color: var(--accent); border-left: 3px solid var(--accent); font-weight: 700; }
+        
+        .app-main { flex: 1; padding: 45px; background: radial-gradient(circle at top right, rgba(249, 115, 22, 0.03) 0%, transparent 60%); }
+        .app-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+        .app-header h3 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+        .app-date { color: var(--text-main); background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 10px; font-size: 0.95rem; font-weight: 500; border: 1px solid var(--border-subtle); }
+        
+        .app-widgets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
+        .app-widget { background: var(--bg-card); padding: 25px; border-radius: 16px; border: 1px solid var(--border-subtle); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .app-widget h5 { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .app-widget .value { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; }
+        .app-widget .trend { font-size: 0.95rem; margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+        .trend.up { color: var(--success); } .trend.warn { color: var(--accent); }
+        
+        .app-recommendations { background: rgba(28, 25, 23, 0.5); padding: 35px; border-radius: 16px; border: 1px solid rgba(249, 115, 22, 0.15); }
+        .app-recommendations h4 { font-size: 1.3rem; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; font-weight: 700; }
+        .app-table { width: 100%; border-collapse: collapse; }
+        .app-table th { text-align: left; padding-bottom: 20px; color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); font-weight: 500; }
+        .app-table td { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-weight: 400; color: #e7e5e4; }
+        .app-table tr:last-child td { border-bottom: none; }
+        .tag { padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px; }
+        .tag.reduce { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .tag.boost { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        /* --- Testimonios --- */
+        .testimonials { padding: 120px 5%; background-color: var(--bg-dark); }
+        .testimonial-card { background-color: var(--bg-card); padding: 45px 40px; border-radius: 24px; border: 1px solid var(--border-subtle); position: relative; transition: all 0.4s ease; }
+        .testimonial-card:hover { border-color: rgba(249, 115, 22, 0.3); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        .testimonial-card::before { content: '\201C'; font-size: 100px; line-height: 1; color: rgba(249, 115, 22, 0.08); position: absolute; top: 10px; left: 20px; font-family: serif; }
+        .stars { color: var(--accent); margin-bottom: 25px; font-size: 1.1rem; display: flex; gap: 4px; }
+        .testimonial-card p { font-size: 1.1rem; line-height: 1.7; font-weight: 300; position: relative; z-index: 2; font-style: italic; }
+        .reviewer { display: flex; align-items: center; gap: 18px; margin-top: 35px; border-top: 1px solid var(--border-subtle); padding-top: 25px; }
+        .reviewer img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); }
+        .reviewer-info h4 { font-size: 1.15rem; margin-bottom: 2px; font-weight: 700; }
+        .reviewer-info p { font-size: 0.9rem; color: var(--text-muted); font-style: normal; }
+
+        /* --- Pricing --- */
+        .pricing { padding: 120px 5%; background: var(--bg-card); border-top: 1px solid var(--border-subtle); }
+        
+        .billing-toggle { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 60px; }
+        .billing-toggle span { font-size: 1.15rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
+        .billing-toggle span.active { color: var(--text-main); }
+        .switch { position: relative; display: inline-block; width: 64px; height: 36px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-dark); transition: .4s; border: 1px solid var(--border-subtle); }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: var(--text-muted); transition: .4s; }
+        input:checked + .slider { background-color: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.4); }
+        input:checked + .slider:before { transform: translateX(28px); background-color: var(--accent); }
+        .slider.round { border-radius: 36px; }
+        .slider.round:before { border-radius: 50%; }
+        .badge-discount { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 700; margin-left: 8px; vertical-align: middle; }
+        .price .annual-price, .annual-note { display: none; }
+        
+        .price-card { background-color: var(--bg-dark); padding: 45px; border-radius: 24px; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; transition: 0.3s; }
+        .price-card:hover { border-color: rgba(255,255,255,0.1); }
+        .price-card.popular { border-color: rgba(249, 115, 22, 0.4); transform: scale(1.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(249, 115, 22, 0.2); position: relative; }
+        .price-card.popular::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; border-radius: 24px; background: radial-gradient(circle at top, rgba(249, 115, 22, 0.1), transparent 70%); pointer-events: none; }
+        
+        .price { font-size: 3.8rem; font-weight: 800; margin: 25px 0 5px; color: var(--text-main); letter-spacing: -1px; }
+        .price span { font-size: 1.1rem; color: var(--text-muted); font-weight: 400; letter-spacing: 0; }
+        .features-list { list-style: none; margin: 35px 0; text-align: left; }
+        .features-list li { margin-bottom: 18px; display: flex; align-items: flex-start; gap: 15px; font-weight: 400; color: #e7e5e4; }
+        .features-list i { color: var(--accent); margin-top: 5px; font-size: 0.9rem; }
+
+        /* --- FAQ --- */
+        .faq-section { padding: 120px 5%; background-color: var(--bg-dark); }
+        .faq-container { max-width: 900px; margin: 0 auto; }
+        .faq-item { background: var(--bg-card); margin-bottom: 15px; border-radius: 16px; border: 1px solid var(--border-subtle); overflow: hidden; transition: 0.3s; }
+        .faq-item:hover { border-color: rgba(255, 255, 255, 0.15); }
+        .faq-item.active { border-color: rgba(249, 115, 22, 0.3); }
+        .faq-question { padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 1.15rem; color: var(--text-main); user-select: none; }
+        .faq-question i { color: var(--accent); transition: transform 0.3s ease; }
+        .faq-answer { padding: 0 30px; max-height: 0; overflow: hidden; transition: all 0.4s ease; color: var(--text-muted); font-size: 1rem; font-weight: 300; line-height: 1.7; }
+        .faq-item.active .faq-answer { padding: 0 30px 25px; max-height: 300px; }
+        .faq-item.active .faq-question i { transform: rotate(180deg); }
+
+        /* --- Footer --- */
+        footer { background-color: #0c0a09; padding: 80px 5% 40px; border-top: 1px solid var(--border-subtle); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; max-width: 1300px; margin: 0 auto 60px; }
+        .footer-logo { font-size: 28px; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .footer-col h4 { font-size: 1.1rem; margin-bottom: 25px; font-weight: 700; color: #fff; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul a { color: var(--text-muted); font-weight: 300; transition: 0.3s; }
+        .footer-col ul a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid var(--border-subtle); color: var(--text-muted); font-size: 0.9rem; font-weight: 300; }
+
+        /* --- Chatbot Flotante --- */
+        .chatbot-container { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
+        .chatbot-btn { width: 65px; height: 65px; border-radius: 50%; background: var(--gradient-text); color: white; border: none; font-size: 26px; cursor: pointer; box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4); transition: 0.3s; display: flex; align-items: center; justify-content: center; animation: pulseGlow 2s infinite; }
+        .chatbot-btn:hover { transform: scale(1.1); animation: none; }
+        .chat-window { position: absolute; bottom: 85px; right: 0; width: 360px; background: rgba(28, 25, 23, 0.95); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid var(--border-subtle); box-shadow: 0 25px 50px rgba(0,0,0,0.6); display: none; flex-direction: column; overflow: hidden; transform-origin: bottom right; }
+        .chat-window.active { display: flex; animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .chat-header { background: rgba(0,0,0,0.2); padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); }
+        .chat-header h4 { font-size: 1.1rem; display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 600; }
+        .close-chat { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.3rem; transition: 0.2s; }
+        .close-chat:hover { color: #fff; }
+        .chat-body { height: 350px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-bubble { max-width: 85%; padding: 14px 18px; border-radius: 14px; font-size: 0.95rem; line-height: 1.5; font-weight: 300; }
+        .bubble-bot { background: rgba(255,255,255,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-subtle); }
+        .bubble-user { background: var(--gradient-text); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+        .chat-input { display: flex; padding: 18px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border-subtle); align-items: center; }
+        .chat-input input { flex: 1; background: transparent; border: none; color: white; outline: none; font-family: 'Outfit', sans-serif; font-size: 0.95rem; }
+        .chat-input input::placeholder { color: var(--text-muted); }
+        .chat-input button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 1.4rem; padding-left: 15px; transition: 0.3s; }
+        .chat-input button:hover { color: var(--accent-hover); transform: scale(1.15) rotate(5deg); }
+        @keyframes slideUp { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* --- Media Queries (Móvil) --- */
+        @media (max-width: 900px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+            .hero-text h1 { font-size: 3.2rem; }
+            .hero-text p { margin: 0 auto 30px; }
+            .integrations-bar { text-align: center; }
+            .integrations-icons { justify-content: center; }
+            .hero-visuals { display: none; }
+            .nav-links { display: none; }
+            
+            .app-layout { flex-direction: column; }
+            .app-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-subtle); padding: 15px; }
+            .app-sidebar ul { display: flex; overflow-x: auto; gap: 10px; margin-top: 10px; padding-bottom: 10px;}
+            .app-sidebar li { margin-bottom: 0; white-space: nowrap; }
+            .app-widgets { grid-template-columns: 1fr; }
+            .app-table { font-size: 0.9rem; }
+            .app-main { padding: 25px 15px; }
+            
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+            .footer-logo { justify-content: center; }
+            
+            .chatbot-container { bottom: 20px; right: 20px; }
+            .chat-window { width: calc(100vw - 40px); right: 0; bottom: 80px; }
+
+            /* Swipe Horizontal para Precios */
+            .pricing .grid-3 {
+                display: flex; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch; gap: 20px; margin-left: -5%; margin-right: -5%;
+                padding: 10px 5% 40px; scrollbar-width: none;
+            }
+            .pricing .grid-3::-webkit-scrollbar { display: none; }
+            .pricing .price-card { min-width: 85vw; flex-shrink: 0; scroll-snap-align: center; }
+            .price-card.popular { transform: scale(1); }
+
+            /* Ajuste móvil para estadísticas */
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 15px; }
+            .stat-number { font-size: 3rem; }
+            .stat-label { font-size: 0.9rem; }
+        }
     </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+</head>
+<body>
+
+    <nav class="reveal">
+        <div class="logo"><i class="fa-solid fa-fire-flame-curved logo-icon"></i> Turno</div>
+        <div class="nav-links">
+            <a href="#solucion">Beneficios</a>
+            <a href="#demo">La App</a>
+            <a href="#precios">Planes</a>
+            <a href="#faq">FAQ</a>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <a href="/app.html#/login" style="font-weight: 800; color: var(--accent); border: 1px solid var(--accent); padding: 12px 24px; border-radius: 8px; box-shadow: 0 0 10px rgba(249,115,22,0.2); transition: 0.3s; text-decoration: none;">Login <i class="fa-solid fa-arrow-right-to-bracket" style="margin-left: 5px;"></i></a>
+            <a href="https://wa.me/56932103198?text=Hola!%20Tengo%20un%20local%20y%20quiero%20solicitar%20el%20piloto%20de%20Turno." target="_blank" class="btn-primary">Solicitar Piloto</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-text reveal">
+                <h1>Más mesas llenas.<br><span>Menos comida a la basura.</span></h1>
+                <p>La Inteligencia Predictiva que analiza el clima, eventos y ventas pasadas para decirte exactamente qué comprar y qué promocionar hoy.</p>
+                <a href="#demo" class="btn-primary" style="font-size: 1.15rem; display: inline-block;">Ver Plataforma en Acción <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
+                
+                <div class="integrations-bar">
+                    <p>COMPATIBLE CON TUS REPORTES ACTUALES:</p>
+                    <div class="integrations-icons">
+                        <span><i class="fa-solid fa-file-excel"></i> Excel</span>
+                        <span><i class="fa-solid fa-file-csv"></i> CSV</span>
+                        <span><i class="fa-solid fa-cash-register"></i> Fudo / Toteat</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visuals reveal delay-2">
+                <div class="mock-dashboard">
+                    <h4>Proyección de Demanda: Esta Semana</h4>
+                    <div class="chart-bars">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar active"></div>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-muted); font-weight: 500;"><i class="fa-solid fa-arrow-trend-up" style="color:var(--accent);"></i> +24% de ingresos proyectados para el Viernes.</p>
+                </div>
+                
+                <div class="mock-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <div>
+                        <strong>Asistente Turno</strong>
+                        <p>Alerta: Mañana lloverá fuerte y hay partido a las 20:00hrs. Sugerencia: Prepara 30% más de sopaipillas y lanza promo de schop por UberEats. 🍔🌧️</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="marquee-container reveal">
+        <div class="marquee-content">
+            <span><i class="fa-solid fa-beer-mug-empty"></i> Cervecería Andalué</span>
+            <span><i class="fa-solid fa-martini-glass-citrus"></i> Bar Plaza Perú</span>
+            <span><i class="fa-solid fa-pizza-slice"></i> Pizzería San Pedro</span>
+            <span><i class="fa-solid fa-burger"></i> Burger Trébol</span>
+            <span><i class="fa-solid fa-utensils"></i> Restobar 592</span>
+            <span><i class="fa-solid fa-fish"></i> Caleta Resto</span>
+            
+            <span><i class="fa-solid fa-beer-mug-empty"></i> Cervecería Andalué</span>
+            <span><i class="fa-solid fa-martini-glass-citrus"></i> Bar Plaza Perú</span>
+            <span><i class="fa-solid fa-pizza-slice"></i> Pizzería San Pedro</span>
+            <span><i class="fa-solid fa-burger"></i> Burger Trébol</span>
+            <span><i class="fa-solid fa-utensils"></i> Restobar 592</span>
+            <span><i class="fa-solid fa-fish"></i> Caleta Resto</span>
+        </div>
+    </div>
+
+    <!-- NUEVO: Sección de Estadísticas (Tracción) -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-box reveal delay-1">
+                <div class="stat-number" data-target="120" data-prefix="+" data-suffix="">0</div>
+                <div class="stat-label">Locales Activos</div>
+                <div class="stat-desc">En la región del Biobío</div>
+            </div>
+            <div class="stat-box reveal delay-2">
+                <div class="stat-number" data-target="1.5" data-prefix="$" data-suffix="M">0</div>
+                <div class="stat-label">Mermas Evitadas</div>
+                <div class="stat-desc">En alimentos salvados mensualmente</div>
+            </div>
+            <div class="stat-box reveal delay-3">
+                <div class="stat-number" data-target="35" data-prefix="+" data-suffix="%">0</div>
+                <div class="stat-label">Más Rentabilidad</div>
+                <div class="stat-desc">Aumento promedio del margen</div>
+            </div>
+            <div class="stat-box reveal delay-4">
+                <div class="stat-number" data-target="15" data-prefix="+" data-suffix="k">0</div>
+                <div class="stat-label">Alertas IA Emitidas</div>
+                <div class="stat-desc">Instrucciones diarias enviadas</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solucion" class="features">
+        <span class="section-tag reveal">Beneficios</span>
+        <h2 class="section-title reveal">El control total de tu rentabilidad</h2>
+        <div class="grid-3">
+            <div class="card reveal delay-1">
+                <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?q=80&w=800&auto=format&fit=crop" alt="Restaurante lleno">
+                <div class="card-content">
+                    <h3>Evita mesas vacías</h3>
+                    <p>Nuestra IA detecta patrones en tus boletas. Si sabemos que los martes fríos no se vende cerveza, te avisaremos para que lances una promoción de vino navegado y no pierdas el día.</p>
+                </div>
+            </div>
+            <div class="card reveal delay-2">
+                <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=800&auto=format&fit=crop" alt="Inventario de comida">
+                <div class="card-content">
+                    <h3>Stop a la merma</h3>
+                    <p>Comprar a ciegas es botar plata. Turno te sugiere exactamente cuántos kilos de insumos frescos necesitas para el fin de semana según la demanda predictiva cruzada con el clima.</p>
+                </div>
+            </div>
+            <div class="card reveal delay-3">
+                <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=800&auto=format&fit=crop" alt="Dueño revisando celular">
+                <div class="card-content">
+                    <h3>Alertas en tu bolsillo</h3>
+                    <p>Como dueño no tienes tiempo de ver gráficos complejos. Te enviamos un resumen de 3 líneas a tu WhatsApp cada mañana con lo que tienes que hacer para ganar más hoy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="app-demo">
+        <span class="section-tag reveal">Tecnología</span>
+        <h2 class="section-title reveal" style="margin-bottom: 20px;">Tu negocio desde adentro</h2>
+        <p class="app-demo-subtitle reveal delay-1">Así se ve la plataforma web de Turno. Transformamos datos en bruto en instrucciones de negocio claras y directas, sin que tengas que ser un experto en números.</p>
+        
+        <div class="browser-window reveal delay-2">
+            <div class="browser-header">
+                <div class="browser-dot r"></div>
+                <div class="browser-dot y"></div>
+                <div class="browser-dot g"></div>
+            </div>
+            
+            <div class="app-layout">
+                <aside class="app-sidebar">
+                    <div style="font-weight: 800; font-size: 1.3rem; color: #fff; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-fire-flame-curved" style="color:var(--accent);"></i> Turno V1.0
+                    </div>
+                    <ul>
+                        <li class="active"><i class="fa-solid fa-chart-pie"></i> Panel de Hoy</li>
+                        <li><i class="fa-solid fa-boxes-stacked"></i> Sugerencia Stock</li>
+                        <li><i class="fa-solid fa-tags"></i> Precios IA</li>
+                        <li><i class="fa-solid fa-file-invoice"></i> Cargar Datos</li>
+                        <li><i class="fa-solid fa-gear"></i> Configuración</li>
+                    </ul>
+                </aside>
+                
+                <main class="app-main">
+                    <header class="app-header">
+                        <div>
+                            <h3 style="color: #fff;">Hola, Restobar Plaza Perú 👋</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 5px;">Aquí está tu predicción para abrir el turno hoy.</p>
+                        </div>
+                        <div class="app-date"><i class="fa-regular fa-calendar" style="margin-right: 8px; color: var(--accent);"></i> Hoy: Viernes 19, 18:00 hrs</div>
+                    </header>
+                    
+                    <div class="app-widgets">
+                        <div class="app-widget">
+                            <h5>Ingresos Proyectados</h5>
+                            <div class="value">$1.450.000</div>
+                            <span class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> +15% vs Viernes pasado</span>
+                        </div>
+                        <div class="app-widget">
+                            <h5>Factor Clima</h5>
+                            <div class="value" style="color: #38bdf8;">Lluvia Fuerte <i class="fa-solid fa-cloud-showers-heavy"></i></div>
+                            <span class="trend warn"><i class="fa-solid fa-circle-exclamation"></i> Impacto alto en terraza</span>
+                        </div>
+                        <div class="app-widget">
+                            <h5>Factor Eventos Locales</h5>
+                            <div class="value" style="font-size: 1.5rem; margin-top: 8px;">Partido Final Colo-Colo</div>
+                            <span class="trend up" style="color: var(--accent);"><i class="fa-solid fa-bolt"></i> +30% demanda de Cerveza</span>
+                        </div>
+                    </div>
+                    
+                    <div class="app-recommendations">
+                        <h4><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i> Acciones sugeridas por la IA para hoy</h4>
+                        <table class="app-table">
+                            <thead>
+                                <tr>
+                                    <th>Categoría</th>
+                                    <th>Instrucción de Turno</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa-solid fa-beer-mug-empty" style="margin-right: 10px; color:var(--text-muted);"></i> Schop / Cervezas</td>
+                                    <td>Aumentar stock en barras interiores. Preparar 40 litros extra por evento deportivo.</td>
+                                    <td><span class="tag boost">AUMENTAR STOCK</span></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-solid fa-leaf" style="margin-right: 10px; color:var(--text-muted);"></i> Ensaladas / Frescos</td>
+                                    <td>Baja demanda proyectada por el frío y lluvia. No descongelar mariscos extras.</td>
+                                    <td><span class="tag reduce">FRENAR COMPRA</span></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-solid fa-tag" style="margin-right: 10px; color:var(--text-muted);"></i> Promoción Flash</td>
+                                    <td>Lanzar promoción de "Papas Fritas + 2 Schop" a las 20:00 hrs.</td>
+                                    <td><span class="tag boost">APLICAR PROMO</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <span class="section-tag reveal">Social Proof</span>
+        <h2 class="section-title reveal" style="margin-bottom: 20px;">Lo que dicen los locales</h2>
+        <p class="app-demo-subtitle reveal delay-1" style="margin-bottom: 70px;">Únete a los dueños de negocios en el Biobío que ya están multiplicando sus márgenes.</p>
+        
+        <div class="grid-3">
+            <div class="testimonial-card reveal delay-1">
+                <div class="stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"Desde que usamos Turno, dejamos de botar comida los días de lluvia. La alerta de WhatsApp es lo primero que reviso en la mañana antes de siquiera abrir el local."</p>
+                <div class="reviewer">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=256&auto=format&fit=crop" alt="Carlos">
+                    <div class="reviewer-info">
+                        <h4>Carlos Mendoza</h4>
+                        <p>Administrador, Bar Plaza Perú</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card reveal delay-2">
+                <div class="stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"Aumentamos nuestra rentabilidad un 15% el primer mes. La IA nos avisó de un evento masivo cerca de la plaza y triplicamos el stock de cerveza justo a tiempo."</p>
+                <div class="reviewer">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=256&auto=format&fit=crop" alt="María José">
+                    <div class="reviewer-info">
+                        <h4>María José Silva</h4>
+                        <p>Dueña, Pizzería San Pedro</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card reveal delay-3">
+                <div class="stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <p>"Es literalmente como tener un analista de datos trabajando 24/7 para tu restobar, pero pagando lo que te cuesta un par de platos del menú. Una verdadera locura."</p>
+                <div class="reviewer">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=256&auto=format&fit=crop" alt="Felipe">
+                    <div class="reviewer-info">
+                        <h4>Felipe Arancibia</h4>
+                        <p>Gerente de Operaciones</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="precios" class="pricing">
+        <span class="section-tag reveal">Inversión</span>
+        <h2 class="section-title reveal" style="margin-bottom: 20px;">Una herramienta que se paga sola</h2>
+        <p class="app-demo-subtitle reveal delay-1" style="margin-bottom: 50px;">Si Turno salva 3 platos de ir a la basura, la suscripción mensual ya está pagada.</p>
+        
+        <div class="billing-toggle reveal delay-1">
+            <span class="active" id="textMonthly" onclick="setBilling('monthly')">Mensual</span>
+            <label class="switch">
+                <input type="checkbox" id="billingSwitch" onchange="toggleBilling()">
+                <span class="slider round"></span>
+            </label>
+            <span id="textAnnual" onclick="setBilling('annual')">Anual <span class="badge-discount">20% Dcto</span></span>
+        </div>
+
+        <div class="grid-3">
+            <!-- Plan Starter -->
+            <a href="https://wa.me/56932103198?text=Hola!%20Me%20interesa%20el%20Plan%20Starter." target="_blank" class="price-card reveal delay-1">
+                <div>
+                    <h3 style="margin-top: 15px; font-size: 1.5rem;">Starter</h3>
+                    <p style="color: var(--text-muted); font-weight:300;">Para locales que recién inician su digitalización.</p>
+                    <div class="price">
+                        <span class="monthly-price">$25.000<span style="font-size: 1.2rem;">/mes</span></span>
+                        <span class="annual-price">$20.000<span style="font-size: 1.2rem;">/mes</span></span>
+                    </div>
+                    <p class="annual-note" style="font-size: 0.9rem; color: var(--success); margin-top: -15px; margin-bottom: 20px; font-weight: 600;">Facturado $240.000 al año</p>
+                    <ul class="features-list">
+                        <li><i class="fa-solid fa-check"></i> Alertas de clima básicas</li>
+                        <li><i class="fa-solid fa-check"></i> Resumen de ventas de ayer</li>
+                        <li><i class="fa-solid fa-check"></i> Carga manual de Excel/CSV</li>
+                        <li><i class="fa-solid fa-check"></i> 1 Usuario administrador</li>
+                    </ul>
+                </div>
+                <div class="btn-primary" style="background: transparent; border: 1px solid var(--border-subtle); color: var(--text-main); margin-top: 20px; box-shadow: none;">Empezar Básico</div>
+            </a>
+
+            <!-- Plan Pro -->
+            <a href="https://wa.me/56932103198?text=Hola!%20Quiero%20iniciar%20el%20piloto%20de%2014%20días%20del%20Plan%20Pro." target="_blank" class="price-card popular reveal delay-2">
+                <div style="background: var(--gradient-text); color: #fff; font-size: 0.8rem; font-weight: 800; padding: 6px 18px; border-radius: 20px; width: fit-content; margin: 0 auto -15px; position: relative; z-index: 2; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);">PLAN RESTOBAR</div>
+                <div>
+                    <h3 style="margin-top: 30px; font-size: 1.8rem; color: var(--accent);">Pro</h3>
+                    <p style="color: var(--text-muted); font-weight:300;">Para locales que buscan maximizar sus utilidades diarias.</p>
+                    <div class="price">
+                        <span class="monthly-price">$65.000<span style="font-size: 1.2rem;">/mes</span></span>
+                        <span class="annual-price">$52.000<span style="font-size: 1.2rem;">/mes</span></span>
+                    </div>
+                    <p class="annual-note" style="font-size: 0.9rem; color: var(--success); margin-top: -15px; margin-bottom: 20px; font-weight: 600;">Facturado $624.000 al año</p>
+                    <ul class="features-list">
+                        <li><i class="fa-solid fa-check"></i> Alertas diarias directas a WhatsApp</li>
+                        <li><i class="fa-solid fa-check"></i> Cruce predictivo clima/eventos</li>
+                        <li><i class="fa-solid fa-check"></i> Predicción de stock exacto</li>
+                        <li><i class="fa-solid fa-check"></i> Dashboard web de BI 24/7</li>
+                    </ul>
+                </div>
+                <div class="btn-primary" style="margin-top: 20px;">Iniciar Piloto de 14 Días</div>
+            </a>
+            
+            <!-- Plan Premium -->
+            <a href="https://wa.me/56932103198?text=Hola!%20Me%20gustaría%20hablar%20con%20ventas%20sobre%20el%20Plan%20Premium." target="_blank" class="price-card reveal delay-3">
+                <div>
+                    <h3 style="margin-top: 15px; font-size: 1.5rem;">Premium</h3>
+                    <p style="color: var(--text-muted); font-weight:300;">Para dueños con múltiples sucursales o franquicias.</p>
+                    <div class="price">
+                        <span class="monthly-price">$120.000<span style="font-size: 1.2rem;">/mes</span></span>
+                        <span class="annual-price">$96.000<span style="font-size: 1.2rem;">/mes</span></span>
+                    </div>
+                    <p class="annual-note" style="font-size: 0.9rem; color: var(--success); margin-top: -15px; margin-bottom: 20px; font-weight: 600;">Facturado $1.152.000 al año</p>
+                    <ul class="features-list">
+                        <li><i class="fa-solid fa-check"></i> Todo lo del plan Pro</li>
+                        <li><i class="fa-solid fa-check"></i> Análisis de competencia zonal</li>
+                        <li><i class="fa-solid fa-check"></i> API directa a caja (Fudo/POS)</li>
+                        <li><i class="fa-solid fa-check"></i> Multi-local / Reporte holding</li>
+                    </ul>
+                </div>
+                <div class="btn-primary" style="background: transparent; border: 1px solid var(--border-subtle); color: var(--text-main); margin-top: 20px; box-shadow: none;">Hablar con Ventas</div>
+            </a>
+        </div>
+    </section>
+
+    <section id="faq" class="faq-section">
+        <div class="faq-container">
+            <span class="section-tag reveal">Soporte</span>
+            <h2 class="section-title reveal" style="margin-bottom: 50px; font-size: 2.5rem;">Preguntas Frecuentes</h2>
+            
+            <div class="faq-item reveal delay-1">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    ¿Tengo que cambiar mi actual sistema de caja (POS)? <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>En absoluto.</strong> Turno no reemplaza a sistemas como Fudo o Toteat, los complementa. Nuestra plataforma está diseñada para que puedas subir fácilmente el reporte diario (Excel/CSV) que genera tu caja actual, o integrarnos directamente vía API.
+                </div>
+            </div>
+
+            <div class="faq-item reveal delay-2">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Mi local es pequeño, ¿realmente me sirve esta IA? <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Sí, de hecho es donde más impacta.</strong> En locales pequeños el margen de error es mínimo. Salvarte de botar 3 platos de comida por una lluvia inesperada o no quedarte sin cerveza en un evento clave, ya paga con creces tu suscripción mensual.
+                </div>
+            </div>
+
+            <div class="faq-item reveal delay-3">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    ¿Cuánto demora la IA en darme predicciones exactas? <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Las recomendaciones de entorno (como clima y eventos locales) funcionan <strong>desde el primer día</strong>. Para las predicciones de ventas precisas adaptadas a tus clientes, el modelo se calibra automáticamente tras analizar tus primeros 14 a 30 días de boletas.
+                </div>
+            </div>
+
+            <div class="faq-item reveal delay-4">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    ¿Cómo y a qué hora recibo las alertas? <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    Recibirás un mensaje automático directamente en tu WhatsApp personal y en el de tus encargados (opcional). Puedes configurar el horario, pero sugerimos que sea a las <strong>09:00 AM o 10:00 AM</strong>, justo antes de empezar a preparar la apertura y el inventario.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid reveal">
+            <div>
+                <div class="footer-logo"><i class="fa-solid fa-fire-flame-curved logo-icon"></i> Turno</div>
+                <p style="color: var(--text-muted); font-weight: 300; max-width: 300px; margin-bottom: 20px;">Liderando la revolución de la Inteligencia de Negocios para el sector gastronómico en Chile.</p>
+                <div style="display: flex; gap: 15px;">
+                    <a href="https://instagram.com/turnocl" target="_blank" style="color: var(--text-muted); font-size: 1.5rem; transition: 0.3s;"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" style="color: var(--text-muted); font-size: 1.5rem; transition: 0.3s;"><i class="fa-brands fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Producto</h4>
+                <ul>
+                    <li><a href="#solucion">Beneficios</a></li>
+                    <li><a href="#demo">Plataforma</a></li>
+                    <li><a href="#precios">Precios</a></li>
+                    <li><a href="#">Casos de Éxito</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Compañía</h4>
+                <ul>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="#">Contacto Ventas</a></li>
+                    <li><a href="#">Blog Gastronómico</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom reveal delay-1">
+            <p>&copy; 2026 Turno SpA. Todos los derechos reservados. Desarrollado por Jorge Ceballos Segura en Concepción, Región del Biobío 🇨🇱</p>
+        </div>
+    </footer>
+
+    <!-- Chatbot Flotante -->
+    <div class="chatbot-container">
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <h4><i class="fa-solid fa-robot" style="color:var(--accent);"></i> Asistente Turno</h4>
+                <button class="close-chat" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="chat-bubble bubble-bot">
+                    ¡Hola! 👋 Soy la IA de Turno. ¿Te gustaría saber cómo predecimos las ventas de tu local?
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Escribe tu consulta..." onkeypress="handleEnter(event)">
+                <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button class="chatbot-btn" onclick="toggleChat()" title="Habla con nuestra IA">
+            <i class="fa-solid fa-comment-dots"></i>
+        </button>
+    </div>
+
+    <!-- Scripts de Lógica y Animación -->
+    <script>
+        // --- 1. Animaciones al hacer Scroll ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // --- 2. Lógica del Toggle de Precios ---
+        function toggleBilling() {
+            const isAnnual = document.getElementById('billingSwitch').checked;
+            document.getElementById('textMonthly').classList.toggle('active', !isAnnual);
+            document.getElementById('textAnnual').classList.toggle('active', isAnnual);
+            
+            document.querySelectorAll('.monthly-price').forEach(el => el.style.display = isAnnual ? 'none' : 'block');
+            document.querySelectorAll('.annual-price').forEach(el => el.style.display = isAnnual ? 'block' : 'none');
+            document.querySelectorAll('.annual-note').forEach(el => el.style.display = isAnnual ? 'block' : 'none');
+        }
+
+        function setBilling(type) {
+            const switchEl = document.getElementById('billingSwitch');
+            if (type === 'monthly' && switchEl.checked) {
+                switchEl.checked = false;
+                toggleBilling();
+            } else if (type === 'annual' && !switchEl.checked) {
+                switchEl.checked = true;
+                toggleBilling();
+            }
+        }
+
+        // --- 3. Lógica del Acordeón FAQ ---
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            const allItems = document.querySelectorAll('.faq-item');
+            allItems.forEach(faq => {
+                if(faq !== item && faq.classList.contains('active')) {
+                    faq.classList.remove('active');
+                }
+            });
+            item.classList.toggle('active');
+        }
+
+        // --- 4. Lógica del Chatbot ---
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('active');
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message === '') return;
+
+            const chatBody = document.getElementById('chatBody');
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble bubble-user';
+            userBubble.textContent = message;
+            chatBody.appendChild(userBubble);
+
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            setTimeout(() => {
+                const botBubble = document.createElement('div');
+                botBubble.className = 'chat-bubble bubble-bot';
+                
+                const msgLower = message.toLowerCase();
+                
+                if (msgLower.includes('precio') || msgLower.includes('valor')) {
+                    botBubble.innerHTML = 'Nuestros planes parten desde los <strong>$65.000 mensuales</strong> para restobares. ¡Se paga solo al evitar mermas! 📈';
+                } else {
+                    botBubble.innerHTML = '¡Interesante! Para agendar una demo guiada, escríbeme directo a WhatsApp <a href="https://wa.me/56932103198" target="_blank" style="color: var(--accent); text-decoration: underline; font-weight: bold;">haciendo clic aquí</a>.';
+                }
+                
+                chatBody.appendChild(botBubble);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 1200);
+        }
+
+        // --- 5. Animación de Contadores Numéricos ---
+        const counters = document.querySelectorAll('.stat-number');
+        const counterObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseFloat(entry.target.getAttribute('data-target'));
+                    const prefix = entry.target.getAttribute('data-prefix') || '';
+                    const suffix = entry.target.getAttribute('data-suffix') || '';
+                    const step = target / 100;
+                    let current = 0;
+
+                    const updateCounter = () => {
+                        current += step;
+                        if (current < target) {
+                            entry.target.innerText = prefix + (target % 1 !== 0 ? current.toFixed(1) : Math.ceil(current)) + suffix;
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            entry.target.innerText = prefix + target + suffix;
+                        }
+                    };
+                    setTimeout(updateCounter, 300);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => counterObserver.observe(counter));
+    </script>
+</body>
 </html>
