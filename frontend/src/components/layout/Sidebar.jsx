@@ -1,9 +1,20 @@
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, TrendingUp, Package, Users, Tag, Radar, Bell, LogOut, X, Flame } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Package, Users, Tag, Radar, Bell, LogOut, X, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const Sidebar = ({ onClose }) => {
   const { logout } = useAuth();
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  // Efecto para aplicar la clase 'light' al documento cuando cambia el estado
+  useEffect(() => {
+    if (isLightMode) {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  }, [isLightMode]);
 
   const links = [
     { to: '/', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
@@ -20,7 +31,7 @@ export const Sidebar = ({ onClose }) => {
       <div className="p-6 flex justify-between items-start">
         <div>
           <div className="flex items-center gap-2">
-            <Flame size={24} className="text-accent fill-accent/20" />
+            <i className="fa-solid fa-fire-flame-curved text-accent text-2xl"></i>
             <h1 className="text-2xl font-heading font-bold text-text">Turno<span className="text-accent">.</span></h1>
           </div>
           <p className="text-[10px] text-muted font-mono tracking-widest uppercase mt-1 ml-8">Business Intelligence</p>
@@ -60,6 +71,15 @@ export const Sidebar = ({ onClose }) => {
             <div className="text-[10px] text-accent font-mono tracking-wider">PLAN PILOTO</div>
           </div>
         </div>
+
+        {/* BOTÓN MODO CLARO / OSCURO */}
+        <button
+          onClick={() => setIsLightMode(!isLightMode)}
+          className="flex items-center gap-3 px-4 py-3 mb-2 w-full text-left text-muted hover:text-text hover:bg-card rounded-lg transition-colors"
+        >
+          {isLightMode ? <Moon size={20} /> : <Sun size={20} />}
+          <span className="font-medium">{isLightMode ? 'Modo Oscuro' : 'Modo Claro'}</span>
+        </button>
 
         <button
           onClick={logout}
