@@ -98,7 +98,7 @@ export const Dashboard = () => {
           <h1 className="text-3xl font-heading font-bold text-text mb-1">Dashboard</h1>
           <p className="text-sm text-muted">Concepción, Chile · Barrio Brasil</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 print:hidden">
           <div className="flex items-center gap-3 bg-card px-4 py-2 rounded-lg border border-border">
             <div className="w-2 h-2 bg-success rounded-full animate-pulse shadow-[0_0_0_3px_rgba(0,201,122,0.2)]"></div>
             <span className="text-xs font-mono text-muted">
@@ -110,6 +110,12 @@ export const Dashboard = () => {
             className="flex items-center gap-2 bg-success/10 border border-success/20 text-success px-4 py-2 rounded-lg hover:bg-success/20 transition-colors text-xs font-medium"
           >
             <span>📲</span> WhatsApp Hoy
+          </button>
+          <button 
+            onClick={() => { showToast('Preparando PDF...', '📄'); setTimeout(() => window.print(), 500); }}
+            className="flex items-center gap-2 bg-accent/10 border border-accent/20 text-accent px-4 py-2 rounded-lg hover:bg-accent/20 transition-colors text-xs font-medium"
+          >
+            <span>📄</span> Exportar PDF
           </button>
         </div>
       </header>

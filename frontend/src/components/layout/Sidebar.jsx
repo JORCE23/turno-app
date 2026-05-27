@@ -16,7 +16,7 @@ export const Sidebar = ({ onClose }) => {
   ];
 
   return (
-    <aside className="w-64 bg-surface border-r border-border h-full flex flex-col shadow-2xl md:shadow-none">
+    <aside className="w-64 bg-surface border-r border-border h-full flex flex-col shadow-2xl md:shadow-none print:hidden">
       <div className="p-6 flex justify-between items-start">
         <div>
           <div className="flex items-center gap-2">
