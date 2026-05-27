@@ -35,7 +35,10 @@ export const Dashboard = () => {
   const topProductoCantidad = data.top_productos ? Object.values(data.top_productos)[0] : 0;
 
   const handleCopiarWhatsApp = () => {
-    const mensaje = `☀️ *¡Hola! Tu resumen estratégico de Turno* 🚀\n\n📊 *Cierre y Acumulado (30d):*\n💰 Ventas totales: ${formatCurrency(data.kpis.ventas_totales_30d)}\n💳 Ticket promedio: ${formatCurrency(data.kpis.ticket_promedio)}\n🏆 Tu estrella: ${topProductoNombre} (${topProductoCantidad} uds)\n\n🧠 *Recomendaciones para HOY:*\n${data.recomendaciones.map(r => `• ${r.mensaje}`).join('\n')}\n\n🔗 *Más detalles aquí:*\nhttps://[TU-DOMINIO].vercel.app\n\n*Que sea un excelente turno.* 📈🔥`;
+    const recomendacionesIA = data.recomendaciones_ia 
+      ? data.recomendaciones_ia.map(r => `• ${r.mensaje}`).join('\n')
+      : data.recomendaciones.map(r => `• ${r.mensaje}`).join('\n');
+    const mensaje = `☀️ *¡Hola! Tu resumen estratégico de Turno* 🚀\n\n📊 *Cierre y Acumulado (30d):*\n💰 Ventas totales: ${formatCurrency(data.kpis.ventas_totales_30d)}\n💳 Ticket promedio: ${formatCurrency(data.kpis.ticket_promedio)}\n🏆 Tu estrella: ${topProductoNombre} (${topProductoCantidad} uds)\n\n🧠 *Recomendaciones para HOY:*\n${recomendacionesIA}\n\n🔗 *Más detalles aquí:*\nhttps://[TU-DOMINIO].vercel.app\n\n*Que sea un excelente turno.* 📈🔥`;
     navigator.clipboard.writeText(mensaje);
     alert('✅ ¡Resumen copiado!\n\nPuedes pegarlo directamente en el WhatsApp del dueño del local.');
   };
@@ -126,37 +129,27 @@ export const Dashboard = () => {
 
       {/* WEATHER STRIP */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-fade-in">
-        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors cursor-pointer" onClick={() => alert("Simulando análisis climático...")}>
-          <div className="text-3xl">🌧️</div>
+        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors">
+          <div className="text-3xl">{data.clima?.lluvia ? '🌧️' : '☀️'}</div>
           <div className="flex-1">
-            <div className="text-xl font-bold font-heading">9°C</div>
-            <div className="text-[11px] text-muted mt-0.5">Lluvia moderada · 18:00–23:00</div>
+            <div className="text-xl font-bold font-heading">{data.clima?.temperatura ? Math.round(data.clima.temperatura) : '--'}°C</div>
+            <div className="text-[11px] text-muted mt-0.5 capitalize">{data.clima?.condicion || 'Cargando clima vivo...'}</div>
           </div>
           <div className="text-right">
-            <div className="text-[9px] font-mono text-muted uppercase tracking-widest">Impacto ventas</div>
-            <div className="text-sm font-bold text-danger">−18%</div>
+            <div className="text-[9px] font-mono text-muted uppercase tracking-widest">Impacto</div>
+            <div className={`text-sm font-bold ${data.clima?.lluvia ? 'text-danger' : 'text-success'}`}>
+              {data.clima?.lluvia ? '−15%' : '+12%'}
+            </div>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors cursor-pointer" onClick={() => alert("Simulando análisis de eventos...")}>
-          <div className="text-3xl">🎸</div>
+        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors md:col-span-2">
+          <div className="text-3xl">🧠</div>
           <div className="flex-1">
-            <div className="text-xl font-bold font-heading">Evento</div>
-            <div className="text-[11px] text-muted mt-0.5">Feria música · Plaza Perú · 21:00</div>
-          </div>
-          <div className="text-right">
-            <div className="text-[9px] font-mono text-muted uppercase tracking-widest">Impacto ventas</div>
-            <div className="text-sm font-bold text-success">+34%</div>
-          </div>
-        </div>
-        <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors cursor-pointer">
-          <div className="text-3xl">💸</div>
-          <div className="flex-1">
-            <div className="text-xl font-bold font-heading">Pricing</div>
-            <div className="text-[11px] text-muted mt-0.5">Recomendación activa · 20:00–23:00</div>
-          </div>
-          <div className="text-right">
-            <div className="text-[9px] font-mono text-muted uppercase tracking-widest">+Margen est.</div>
-            <div className="text-sm font-bold text-accent">+$87K</div>
+            <div className="text-sm font-bold font-heading text-accent">Motor Prescriptivo IA</div>
+            <div className="text-xs text-muted mt-1 leading-relaxed">
+              {data.recomendaciones_ia ? data.recomendaciones_ia[0]?.mensaje : 'Analizando variables...'} <br/>
+              {data.recomendaciones_ia && data.recomendaciones_ia[1] ? data.recomendaciones_ia[1].mensaje : ''}
+            </div>
           </div>
         </div>
       </div>

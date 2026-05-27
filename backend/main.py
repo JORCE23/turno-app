@@ -32,7 +32,7 @@ def read_root():
     return {"message": "Turno MVP API funcionando", "status": "ok"}
 
 @app.get("/api/dashboard")
-def get_dashboard_data():
+async def get_dashboard_data():
     data_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'dashboard_data.json')
     
     if not os.path.exists(data_path):
@@ -40,6 +40,37 @@ def get_dashboard_data():
         
     with open(data_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
+        
+    # --- MOTOR DE ANALÍTICA PRESCRIPTIVA ---
+    clima = await obtener_clima_concepcion()
+    prediccion_res = obtener_prediccion_hoy()
+    
+    prediccion = prediccion_res.get("prediccion_ventas", 0) if "prediccion_ventas" in prediccion_res else 0
+    meta_diaria = 1500000  # Meta ficticia del local para hoy
+    brecha = meta_diaria - prediccion
+    
+    recomendaciones_ia = []
+    
+    # Regla 1: Cruzando Clima con Operación
+    if "error" not in clima:
+        if clima.get("lluvia"):
+            recomendaciones_ia.append({
+                "mensaje": f"Lluvia en tiempo real ({clima['temperatura']}°C). Las ventas en salón caerán. Sugerencia: Habilita 1 repartidor extra y lanza promo por Delivery."
+            })
+        else:
+            recomendaciones_ia.append({
+                "mensaje": f"Buen clima detectado ({clima['temperatura']}°C). Sugerencia: Habilita mesas en la terraza y prioriza venta de bebidas frías."
+            })
+            
+    # Regla 2: Cruzando Predicción con Metas
+    if brecha > 0 and prediccion > 0:
+        recomendaciones_ia.append({
+            "mensaje": f"Predicción: ${prediccion:,.0f} CLP. Te faltan ${brecha:,.0f} para tu meta diaria. Sugerencia: Lanza Happy Hour anticipado a las 18:30 para empujar ventas."
+        })
+
+    data["clima"] = clima
+    data["prediccion_hoy"] = prediccion
+    data["recomendaciones_ia"] = recomendaciones_ia
         
     return data
 

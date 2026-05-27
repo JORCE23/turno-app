@@ -46,6 +46,14 @@ export const useDashboardData = () => {
             ticket_promedio: 17200,
             total_tickets: 2005
           },
+          clima: {
+            temperatura: 12,
+            condicion: "Offline",
+            lluvia: false
+          },
+          recomendaciones_ia: [
+            { mensaje: "Modo Offline: Analítica cruzada pausada por falta de conexión." }
+          ],
           top_productos: {
             "Bebida Lata": 1997,
             "Pisco Sour": 1988
