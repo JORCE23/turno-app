@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { KpiCard } from '../components/ui/KpiCard';
 import { Package, AlertTriangle, ArrowRightLeft, TrendingDown } from 'lucide-react';
 
@@ -10,12 +11,68 @@ export const Stock = () => {
     { id: 5, name: 'Pan de Hamburguesa', current: 120, min: 100, unit: 'unidades', status: 'ok', trend: 'Consumo estable' },
   ];
 
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg, icon = '✅') => {
+    setToast({ msg, icon });
+    setTimeout(() => setToast(null), 3500);
+  };
+
   const handleGenerarOrden = () => {
-    alert("📋 Orden de compra generada automáticamente con los ítems críticos (Cerveza IPA y Limones).\n\nEn la Fase 2, esta orden se enviará por WhatsApp o email directamente a tus proveedores.");
+    const itemsToOrder = stockItems.filter(item => item.status !== 'ok');
+    const fecha = new Date().toLocaleDateString('es-CL');
+    const numeroOrden = Math.floor(Math.random() * 10000).toString().padStart(5, '0');
+
+    const tableRows = itemsToOrder.map(item => {
+      const sugerido = item.min * 2; // Lógica simple de reposición
+      return `
+        <tr>
+          <td style="padding: 12px; border-bottom: 1px solid #ddd;">${item.name}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #ddd; color: #FF4560;">${item.current} ${item.unit}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #ddd; font-weight: bold; color: #f97316;">${sugerido} ${item.unit}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const html = `
+      <html>
+        <head>
+          <title>Orden_de_Compra_Turno_${numeroOrden}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #333; max-width: 800px; margin: 0 auto; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #f97316; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 28px; font-weight: bold; color: #111820; }
+            .logo span { color: #f97316; }
+            .info { text-align: right; color: #5a6878; line-height: 1.5; }
+            h1 { color: #111820; margin-bottom: 10px; font-size: 20px; }
+            table { border-collapse: collapse; margin-top: 20px; width: 100%; text-align: left; }
+            th { padding: 12px; background-color: #f8f9fa; color: #5a6878; border-bottom: 2px solid #ddd; }
+            .footer { margin-top: 50px; font-size: 12px; color: #5a6878; text-align: center; border-top: 1px solid #ddd; padding-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="logo">Turno<span>.</span></div>
+            <div class="info"><strong>Fecha:</strong> ${fecha}<br><strong>Orden #:</strong> ${numeroOrden}<br><strong>Local:</strong> Pizza Los Álamos</div>
+          </div>
+          <h1>Orden de Reposición Automática</h1>
+          <p style="color: #5a6878; font-size: 14px;">La Inteligencia Artificial de Turno ha detectado niveles críticos de stock y sugiere la siguiente reposición para evitar quiebres.</p>
+          <table><thead><tr><th>Insumo</th><th>Stock Actual</th><th>Cantidad a Pedir</th></tr></thead><tbody>${tableRows}</tbody></table>
+          <div class="footer">Documento generado por el Motor Prescriptivo de Turno Business Intelligence.<br>app.turno.cl</div>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    setTimeout(() => printWindow.print(), 250);
+    
+    showToast("PDF de Orden de Compra generado", "📄");
   };
 
   const handlePedirAhora = (name) => {
-    alert(`📦 Preparando solicitud rápida de stock para: ${name}.\n\n(Acción simulada para el MVP)`);
+    showToast(`Solicitud preparada para: ${name}`, "📦");
   };
 
   return (
@@ -120,6 +177,14 @@ export const Stock = () => {
           </table>
         </div>
       </div>
+
+      {/* TOAST NOTIFICATION */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-card border border-border border-l-4 border-l-accent p-4 rounded-lg shadow-xl flex items-center gap-3 z-50 animate-fade-in">
+          <span className="text-xl">{toast.icon}</span>
+          <span className="text-sm font-medium text-text">{toast.msg}</span>
+        </div>
+      )}
     </div>
   );
 };
