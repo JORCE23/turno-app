@@ -44,7 +44,8 @@ export const Stock = () => {
             .logo { font-size: 28px; font-weight: bold; color: #111820; }
             .logo span { color: #f97316; }
             .info { text-align: right; color: #5a6878; line-height: 1.5; }
-            h1 { color: #111820; margin-bottom: 10px; font-size: 20px; }
+            h1 { color: #111820; margin-bottom: 5px; font-size: 20px; }
+            .proveedor-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #5a6878; font-size: 14px; border-left: 4px solid #f97316; }
             table { border-collapse: collapse; margin-top: 20px; width: 100%; text-align: left; }
             th { padding: 12px; background-color: #f8f9fa; color: #5a6878; border-bottom: 2px solid #ddd; }
             .footer { margin-top: 50px; font-size: 12px; color: #5a6878; text-align: center; border-top: 1px solid #ddd; padding-top: 20px; }
@@ -56,6 +57,11 @@ export const Stock = () => {
             <div class="info"><strong>Fecha:</strong> ${fecha}<br><strong>Orden #:</strong> ${numeroOrden}<br><strong>Local:</strong> Pizza Los Álamos</div>
           </div>
           <h1>Orden de Reposición Automática</h1>
+          <div class="proveedor-info">
+            <strong>Proveedor:</strong> Distribuidora Sur Mayorista<br>
+            <strong>Atención:</strong> Ventas HORECA<br>
+            <strong>Solicitado por:</strong> IA Prescriptiva Turno
+          </div>
           <p style="color: #5a6878; font-size: 14px;">La Inteligencia Artificial de Turno ha detectado niveles críticos de stock y sugiere la siguiente reposición para evitar quiebres.</p>
           <table><thead><tr><th>Insumo</th><th>Stock Actual</th><th>Cantidad a Pedir</th></tr></thead><tbody>${tableRows}</tbody></table>
           <div class="footer">Documento generado por el Motor Prescriptivo de Turno Business Intelligence.<br>app.turno.cl</div>
