@@ -21,6 +21,12 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 export const Dashboard = () => {
   const { data, loading, error } = useDashboardData();
   const [showAlert, setShowAlert] = useState(true);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg, icon = '✅') => {
+    setToast({ msg, icon });
+    setTimeout(() => setToast(null), 3500);
+  };
 
   if (loading) return <div className="p-8 text-text">Cargando datos del dashboard...</div>;
   if (!data) return <div className="p-8 text-danger">Error cargando datos: {error}</div>;
@@ -40,7 +46,7 @@ export const Dashboard = () => {
       : data.recomendaciones.map(r => `• ${r.mensaje}`).join('\n');
     const mensaje = `☀️ *¡Hola! Tu resumen estratégico de Turno* 🚀\n\n📊 *Cierre y Acumulado (30d):*\n💰 Ventas totales: ${formatCurrency(data.kpis.ventas_totales_30d)}\n💳 Ticket promedio: ${formatCurrency(data.kpis.ticket_promedio)}\n🏆 Tu estrella: ${topProductoNombre} (${topProductoCantidad} uds)\n\n🧠 *Recomendaciones para HOY:*\n${recomendacionesIA}\n\n🔗 *Más detalles aquí:*\nhttps://[TU-DOMINIO].vercel.app\n\n*Que sea un excelente turno.* 📈🔥`;
     navigator.clipboard.writeText(mensaje);
-    alert('✅ ¡Resumen copiado!\n\nPuedes pegarlo directamente en el WhatsApp del dueño del local.');
+    showToast('¡Resumen copiado! Listo para pegarlo en WhatsApp.', '✅');
   };
 
   // Datos simulados para las gráficas del MVP
@@ -116,7 +122,7 @@ export const Dashboard = () => {
             <div className="text-xs text-muted mt-1">El Boliche (Plaza Perú) lanzó happy hour 2x1 en cócteles · Hace 47 min</div>
           </div>
           <button 
-            onClick={() => alert('Sugerencia: Activar promo 3x2 en cervezas por las próximas 2 horas para retener público.')}
+          onClick={() => showToast('Sugerencia activada: Promo 3x2 en cervezas por 2 horas.', '⚡')}
             className="text-[10px] font-mono uppercase tracking-wider text-accent bg-accent/10 border border-accent/30 rounded-md px-4 py-2 hover:bg-accent/20 transition-colors whitespace-nowrap mt-2 md:mt-0"
           >
             Ver contraataque →
@@ -158,7 +164,7 @@ export const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <KpiCard 
           title="Ventas Hoy" 
-          value={formatCurrency(data.kpis.ventas_totales_30d)} 
+          value={formatCurrency(data.kpis.ventas_hoy || 0)} 
           trend={12.5}
           subtitle="Vs. ayer"
           icon={<DollarSign size={24} />}
@@ -362,6 +368,14 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* TOAST NOTIFICATION */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-card border border-border border-l-4 border-l-accent p-4 rounded-lg shadow-xl flex items-center gap-3 z-50 animate-fade-in">
+          <span className="text-xl">{toast.icon}</span>
+          <span className="text-sm font-medium text-text">{toast.msg}</span>
+        </div>
+      )}
     </div>
   );
 };

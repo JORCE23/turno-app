@@ -5,7 +5,7 @@ import os
 import httpx
 import joblib
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 # Buscar el .env explícitamente en la carpeta raíz y forzar su lectura
@@ -139,4 +139,31 @@ def obtener_prediccion_hoy():
     return {
         "fecha": hoy.strftime("%Y-%m-%d"),
         "prediccion_ventas": int(prediccion)
+    }
+
+@app.get("/api/prediccion_semana")
+def obtener_prediccion_semana():
+    if modelo_ml is None:
+        return {"error": "El modelo no está entrenado. Ejecuta entrenar_modelo.py primero."}
+    
+    hoy = datetime.now()
+    dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    
+    nombres_dias = []
+    predicciones = []
+    
+    for i in range(7):
+        dia_futuro = hoy + timedelta(days=i)
+        X_pred = pd.DataFrame([{
+            'dia_semana': dia_futuro.weekday(),
+            'es_fin_de_semana': 1 if dia_futuro.weekday() >= 4 else 0,
+            'dia_mes': dia_futuro.day
+        }])
+        pred = modelo_ml.predict(X_pred)[0]
+        nombres_dias.append(dias_semana[dia_futuro.weekday()])
+        predicciones.append(int(pred))
+        
+    return {
+        "dias": nombres_dias,
+        "predicciones": predicciones
     }

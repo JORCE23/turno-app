@@ -43,6 +43,7 @@ export const useDashboardData = () => {
           ultima_actualizacion: new Date().toLocaleString(),
           kpis: {
             ventas_totales_30d: 34500000,
+            ventas_hoy: 1850000,
             ticket_promedio: 17200,
             total_tickets: 2005
           },

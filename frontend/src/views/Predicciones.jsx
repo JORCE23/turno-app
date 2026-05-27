@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { KpiCard } from '../components/ui/KpiCard';
 import { TrendingUp, Calendar, AlertCircle } from 'lucide-react';
 import {
@@ -25,16 +26,50 @@ ChartJS.register(
 );
 
 export const Predicciones = () => {
-  // Mock data for 7 days forecast
-  const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  const [datosSemana, setDatosSemana] = useState({
+    dias: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+    valores: [0, 0, 0, 0, 0, 0, 0]
+  });
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg, icon = 'ℹ️') => {
+    setToast({ msg, icon });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  useEffect(() => {
+    const fetchPredicciones = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const cleanUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
+        const response = await fetch(`${cleanUrl}/api/prediccion_semana`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (!data.error) {
+            setDatosSemana({
+              dias: data.dias,
+              valores: data.predicciones
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error al cargar predicciones:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPredicciones();
+  }, []);
   
   const demandaData = {
-    labels: dias,
+    labels: datosSemana.dias,
     datasets: [
       {
         fill: true,
-        label: 'Demanda Proyectada (%)',
-        data: [30, 45, 50, 75, 95, 100, 60],
+        label: 'Ventas Proyectadas (CLP)',
+        data: datosSemana.valores,
         borderColor: '#f97316', // --accent
         backgroundColor: 'rgba(249, 115, 22, 0.1)',
         tension: 0.4,
@@ -71,9 +106,11 @@ export const Predicciones = () => {
         },
         ticks: {
           color: '#5A6878', // --muted
+          callback: function(value) {
+            return '$' + value.toLocaleString('es-CL');
+          }
         },
         beginAtZero: true,
-        max: 100,
       },
       x: {
         grid: {
@@ -87,15 +124,15 @@ export const Predicciones = () => {
   };
 
   const handleVerTacticas = () => {
-    alert("☔ Sugerencias de Delivery por Clima:\n\n1. Activar promo 'Menú Lluvia' en UberEats con costo de envío gratis.\n2. Reforzar dotación de repartidores propios.\n3. Reducir área de cobertura un 15% para mantener tiempos de entrega óptimos.");
+    showToast("Sugerencia: Activar promo 'Menú Lluvia' en UberEats con envío gratis.", "☔");
   };
 
   const handleRevisarStock = () => {
-    alert("📦 Acción Estratégica:\n\nTe sugerimos aumentar tu pedido estándar de barriles de Cerveza y destilados en un 40% para cubrir el peak de este Sábado. ¿Deseas generar la orden pre-completada al proveedor?");
+    showToast("Orden de +40% en barriles de Cerveza generada al proveedor.", "📦");
   };
 
   const handleRecalcular = () => {
-    alert("🔄 Recalculando modelos predictivos...\n\n(En la Fase 2, esta acción consultará la IA de Turno en la nube para procesar nuevos datos climáticos y generar un pronóstico actualizado).");
+    showToast("Recalculando modelos predictivos con IA...", "🔄");
   };
 
   return (
@@ -181,6 +218,14 @@ export const Predicciones = () => {
           </div>
         </div>
       </div>
+
+      {/* TOAST NOTIFICATION */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-card border border-border border-l-4 border-l-accent p-4 rounded-lg shadow-xl flex items-center gap-3 z-50 animate-fade-in">
+          <span className="text-xl">{toast.icon}</span>
+          <span className="text-sm font-medium text-text">{toast.msg}</span>
+        </div>
+      )}
     </div>
   );
 };

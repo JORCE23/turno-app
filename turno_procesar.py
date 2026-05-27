@@ -14,6 +14,8 @@ def procesar_datos():
     
     # KPIs Básicos
     ventas_totales = int(df['total'].sum())
+    fecha_max = df['fecha'].max()
+    ventas_hoy = int(df[df['fecha'] == fecha_max]['total'].sum())
     tickets_unicos = df['ticket_id'].nunique()
     ticket_promedio = int(ventas_totales / tickets_unicos) if tickets_unicos > 0 else 0
     
@@ -28,6 +30,7 @@ def procesar_datos():
         "ultima_actualizacion": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         "kpis": {
             "ventas_totales_30d": ventas_totales,
+            "ventas_hoy": ventas_hoy,
             "ticket_promedio": ticket_promedio,
             "total_tickets": tickets_unicos
         },

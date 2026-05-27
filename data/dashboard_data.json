@@ -1,7 +1,8 @@
 {
-    "ultima_actualizacion": "2026-05-27 00:42:40",
+    "ultima_actualizacion": "2026-05-27 00:52:38",
     "kpis": {
         "ventas_totales_30d": 80896700,
+        "ventas_hoy": 1917000,
         "ticket_promedio": 35264,
         "total_tickets": 2294
     },
