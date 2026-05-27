@@ -130,10 +130,10 @@ export const Dashboard = () => {
       {/* WEATHER STRIP */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-fade-in">
         <div className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-white/10 transition-colors">
-          <div className="text-3xl">{data.clima?.lluvia ? '🌧️' : '☀️'}</div>
+          <div className="text-3xl">{data.clima?.error ? '⚠️' : (data.clima?.lluvia ? '🌧️' : '☀️')}</div>
           <div className="flex-1">
             <div className="text-xl font-bold font-heading">{data.clima?.temperatura ? Math.round(data.clima.temperatura) : '--'}°C</div>
-            <div className="text-[11px] text-muted mt-0.5 capitalize">{data.clima?.condicion || 'Cargando clima vivo...'}</div>
+            <div className="text-[11px] text-muted mt-0.5 capitalize">{data.clima?.error ? 'Sin conexión API' : (data.clima?.condicion || 'Cargando clima vivo...')}</div>
           </div>
           <div className="text-right">
             <div className="text-[9px] font-mono text-muted uppercase tracking-widest">Impacto</div>

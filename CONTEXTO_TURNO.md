@@ -155,7 +155,7 @@ turno-app/
 ### Beta vendible (Construido / En curso)
 - [x] Dashboard con KPIs + gráficos
 - [x] Alertas de stock crítico
-- [ ] **NUEVO:** API Clima integrada (OpenWeather)
+- [x] **NUEVO:** API Clima integrada (Open-Meteo)
 - [ ] **NUEVO:** Alerta automática WhatsApp (Twilio API)
 - [ ] **NUEVO:** Motor ML Local + Analítica Prescriptiva (Brecha de Metas)
 
@@ -245,13 +245,15 @@ cd frontend && vercel
 * [x] Conexión Vercel -> Render verificada y enlazada
 * [x] Probar el flujo en producción y Fix de Timeout de 10s (Cold Starts).
 * [x] Pivote Estratégico: Transición de Mago de Oz a Automatización con APIs reales y Machine Learning.
+* [x] Motor de Analítica Prescriptiva cruzando clima (OpenWeather) con predicción de ventas ML.
+* [x] UI Dashboard actualizada para mostrar recomendaciones IA y status del clima en vivo.
+* [x] Migración de API Clima de OpenWeather a Open-Meteo (Sin API Key).
 
 **Próxima sesión — construir (SPRINT ACTUAL):**
 
-* [x] **Modelo ML:** Crear el script local (`entrenar_modelo.py`) usando scikit-learn y datos simulados/históricos para generar y exportar el modelo predictivo base (`.pkl`).
-* [x] **API Clima:** Integrar OpenWeather API (Free Tier) en FastAPI y cargar modelo ML.
-* [ ] **Analítica Prescriptiva:** Desarrollar la función de cálculo de `Brecha` cruzada con reglas de negocio en base al clima.
-* [ ] **API WhatsApp:** Configurar Twilio Sandbox en FastAPI para disparar las recomendaciones operativas generadas directamente al celular.
+* [ ] **Base de Datos Cloud:** Crear proyecto en Supabase, subir historial de ventas y conectar el backend FastAPI mediante credenciales.
+* [ ] **Refactor de Datos:** Modificar `main.py` para leer los KPIs directamente desde PostgreSQL en Supabase en lugar del JSON local.
+* [ ] **API WhatsApp:** Configurar Twilio Sandbox en FastAPI para disparar las recomendaciones.
 
 **Decisiones tomadas:**
 

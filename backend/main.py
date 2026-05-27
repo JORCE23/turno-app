@@ -8,7 +8,17 @@ import pandas as pd
 from datetime import datetime
 from dotenv import load_dotenv
 
-load_dotenv()
+# Buscar el .env explícitamente en la carpeta raíz y forzar su lectura
+ruta_env = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+
+if os.path.exists(ruta_env):
+    print(f"📄 ¡Archivo .env físico ENCONTRADO en la ruta exacta!")
+    load_dotenv(ruta_env, override=True)
+else:
+    print(f"⚠️ EL ARCHIVO FÍSICO NO EXISTE EN: {ruta_env}")
+    print("   👉 Revisa si Windows lo guardó como '.env.txt' sin querer.")
+
+print("☁️ Open-Meteo API (No requiere Key). ¡Listo para consultar el clima!")
 
 app = FastAPI(title="Turno MVP API")
 
@@ -61,6 +71,10 @@ async def get_dashboard_data():
             recomendaciones_ia.append({
                 "mensaje": f"Buen clima detectado ({clima['temperatura']}°C). Sugerencia: Habilita mesas en la terraza y prioriza venta de bebidas frías."
             })
+    else:
+        recomendaciones_ia.append({
+            "mensaje": "⚠️ Clima no disponible. Verifica que el archivo .env tenga la OPENWEATHER_API_KEY correcta."
+        })
             
     # Regla 2: Cruzando Predicción con Metas
     if brecha > 0 and prediccion > 0:
@@ -68,6 +82,10 @@ async def get_dashboard_data():
             "mensaje": f"Predicción: ${prediccion:,.0f} CLP. Te faltan ${brecha:,.0f} para tu meta diaria. Sugerencia: Lanza Happy Hour anticipado a las 18:30 para empujar ventas."
         })
 
+    # Nos aseguramos de mantener la llave de recomendaciones original intacta
+    if "recomendaciones" not in data:
+        data["recomendaciones"] = []
+        
     data["clima"] = clima
     data["prediccion_hoy"] = prediccion
     data["recomendaciones_ia"] = recomendaciones_ia
@@ -80,23 +98,26 @@ async def obtener_clima_concepcion():
     lat = "-36.82699"
     lon = "-73.04977"
     
-    api_key = os.getenv("OPENWEATHER_API_KEY")
-    if not api_key:
-        return {"error": "API Key de OpenWeather no configurada en el entorno"}
-        
-    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric&lang=es"
+    # API Open-Meteo sin Keys
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,precipitation,weather_code&timezone=America%2FSantiago"
     
-    async with httpx.AsyncClient() as client:
-        respuesta = await client.get(url)
-        if respuesta.status_code == 200:
-            datos = respuesta.json()
-            es_lluvia = "rain" in datos["weather"][0]["main"].lower() or "lluvia" in datos["weather"][0]["description"].lower()
-            return {
-                "temperatura": datos["main"]["temp"],
-                "condicion": datos["weather"][0]["description"],
-                "lluvia": es_lluvia
-            }
-        return {"error": "Error al conectar con OpenWeather"}
+    # timeout=3.0 obliga a que no se quede pegado pensando si el wifi parpadea
+    async with httpx.AsyncClient(timeout=3.0) as client:
+        try:
+            respuesta = await client.get(url)
+            if respuesta.status_code == 200:
+                datos = respuesta.json()
+                current = datos.get("current", {})
+                temp = current.get("temperature_2m", 0)
+                precip = current.get("precipitation", 0)
+                wmo_code = current.get("weather_code", 0)
+                es_lluvia = precip > 0 or wmo_code in [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99]
+                condicion = "lluvia" if es_lluvia else ("nublado" if wmo_code in [1, 2, 3, 45, 48] else "despejado")
+                return {"temperatura": temp, "condicion": condicion, "lluvia": es_lluvia}
+        except Exception as e:
+            print(f"❌ Error de clima: {e}")
+            
+        return {"temperatura": 14, "condicion": "nublado (simulado)", "lluvia": False}
 
 @app.get("/api/prediccion")
 def obtener_prediccion_hoy():
